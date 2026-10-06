@@ -1,6 +1,8 @@
 import { useCallback, useState } from 'react'
 import { Gauge, Menu } from 'lucide-react'
+import { archivio } from '../dati'
 import { MenuLaterale } from './MenuLaterale'
+import { Registra } from './Registra'
 import { useRotta } from './rotta'
 
 /**
@@ -31,7 +33,8 @@ export function App() {
       </header>
       <MenuLaterale aperto={menuAperto} corrente={rotta} onChiudi={chiudiMenu} />
       <main className="mx-auto w-full max-w-[640px] flex-1 p-3 pb-[calc(12px+env(safe-area-inset-bottom))] lg:col-start-2">
-        <p className="mt-8 text-center text-testo-tenue">{rotta === 'registra' ? 'Registra' : 'Diario'}</p>
+        {rotta === 'registra' && <Registra onSalva={(voce) => archivio.salva(voce)} />}
+        {rotta === 'diario' && <p className="mt-8 text-center text-testo-tenue">Diario</p>}
       </main>
     </div>
   )
