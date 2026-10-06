@@ -1,0 +1,75 @@
+@import 'tailwindcss';
+
+/* Palette grafite e ambra (docs/09-interfaccia.md). Solo tema chiaro.
+   Font e scala come le altre app di casa, per coerenza. */
+@theme {
+  --color-grafite: #3f444e;
+  --color-grafite-scura: #30343c;
+  --color-ambra: #d9922e;
+  --color-ambra-scura: #a8691a;
+  --color-fondo: #f4f3ef;
+  /* Fondo della voce scelta nel menu. */
+  --color-fumo: #e6e4de;
+  --color-panna: #fbf8f1;
+  --color-testo: #2a2d33;
+  --color-testo-tenue: #676b73;
+  --color-bordo: #dcd9d2;
+  --color-pericolo: #a8333a;
+
+  --font-sans: 'Avenir Next', 'Segoe UI', system-ui, -apple-system, sans-serif;
+
+  /* Animazioni brevi, come nelle altre app (~200ms). */
+  --animate-entra: entra 200ms ease-out;
+  --animate-compari: compari 180ms ease-out;
+  --animate-dissolvi: dissolvi 180ms ease-out;
+
+  @keyframes entra {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+  }
+  @keyframes compari {
+    from {
+      opacity: 0;
+      transform: scale(0.97);
+    }
+  }
+  @keyframes dissolvi {
+    from {
+      opacity: 0;
+    }
+  }
+}
+
+/* Chi ha chiesto meno movimento vede tutto cambiare di colpo. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after,
+  ::backdrop {
+    animation-duration: 1ms !important;
+    animation-delay: 0s !important;
+    transition-duration: 1ms !important;
+    transition-delay: 0s !important;
+  }
+}
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  background: var(--color-fondo);
+  color: var(--color-testo);
+  font-family: var(--font-sans);
+  font-size: 14px;
+}
+
+/* I campi di testo restano a 16px: sotto, iOS zooma da solo al tocco. */
+input,
+textarea,
+select {
+  font-size: 16px;
+}
