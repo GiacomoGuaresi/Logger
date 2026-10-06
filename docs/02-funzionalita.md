@@ -26,7 +26,7 @@
 
 ## Diario
 
-Un **diario per soggetto**, separato dagli altri: prima si sceglie il soggetto, poi si leggono le sue righe.
+Un **diario per soggetto**, separato dagli altri: prima si sceglie il soggetto, poi si leggono le sue righe. Ogni diario si apre anche **direttamente dal menu laterale**, dove sono elencati tutti in ordine alfabetico.
 
 - **Scegli il diario**: una card per soggetto, in cima quello dove si è scritto per ultimo. Ogni card dice quante righe ha, quando è stata scritta l'ultima ("oggi 08:12", "ieri 18:40", "5 ott") e l'ultimo valore delle tre chiavi più usate ("km · 41000").
 - **Il diario di un soggetto** (`#/diario/moto`): le sue righe, dalla più recente, raggruppate per giorno ("Oggi", "Ieri", "lunedì 5 ottobre"). Ogni riga: ora, chiave, valore se c'è. In cima **‹ Diari** per tornare all'elenco e **+ Riga** per aprire Registra già su questo soggetto.

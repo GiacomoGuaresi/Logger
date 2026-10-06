@@ -4,7 +4,7 @@
 
 Stessa struttura di Grocery, Projects e Trekking, con un colore diverso:
 - **intestazione piena** nel colore dell'app, con ☰ a sinistra;
-- **menu laterale** a scomparsa, sempre aperto su schermi larghi: **Registra**, **Diario** e **Installa l'app**;
+- **menu laterale** a scomparsa, sempre aperto su schermi larghi: **Registra**; poi la sezione **Diari** con **Tutti i diari** (le card) e una voce per ogni diario, in ordine alfabetico, col numero di righe a destra; in fondo **Installa l'app**. La voce della pagina aperta, diario compreso, ha la barra ambra;
 - stesso font e stesse icone Lucide;
 - solo **italiano** e solo **tema chiaro**.
 

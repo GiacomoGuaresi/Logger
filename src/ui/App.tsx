@@ -62,7 +62,8 @@ export function App() {
       </header>
       <MenuLaterale
         aperto={menuAperto}
-        corrente={rotta.pagina}
+        corrente={rotta}
+        diari={[...elenco].sort((a, b) => a.nome.localeCompare(b.nome, 'it', { sensitivity: 'base' }))}
         onChiudi={chiudiMenu}
         onInstalla={
           statoInstallazione === 'installata'
