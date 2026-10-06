@@ -66,7 +66,22 @@ export function validaVoce(dati: unknown): Esito<Voce> {
   }
 }
 
-/** Una riga nuova dal modulo Registra, con l'ora di adesso e un id nuovo. */
-export function nuovaVoce(campi: CampiVoce, ora: Date = new Date(), id: string = crypto.randomUUID()): Esito<Voce> {
+/** Quanto avanti si tollera una data scelta a mano: il minuto del campo arrotonda. */
+const TOLLERANZA_FUTURO_MS = 60_000
+
+/**
+ * Una riga dal modulo (Registra, o la modifica dal diario): di solito con l'ora
+ * di adesso e un id nuovo. Una data scelta a mano non può stare nel futuro: lo
+ * si controlla solo qui, con l'orologio di chi scrive, e non in `validaVoce`,
+ * perché il server o un orologio un po' avanti non scartino righe già in coda.
+ */
+export function nuovaVoce(
+  campi: CampiVoce,
+  ora: Date = new Date(),
+  id: string = crypto.randomUUID(),
+  adesso: Date = new Date(),
+): Esito<Voce> {
+  if (Number.isNaN(ora.getTime())) return { ok: false, errore: 'Data non valida' }
+  if (ora.getTime() > adesso.getTime() + TOLLERANZA_FUTURO_MS) return { ok: false, errore: 'La data è nel futuro' }
   return validaVoce({ id, quando: ora.toISOString(), ...campi })
 }

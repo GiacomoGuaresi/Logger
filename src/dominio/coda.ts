@@ -4,7 +4,10 @@
 
 import type { Voce } from './voce'
 
-export type Scrittura = { tipo: 'salva'; voce: Voce } | { tipo: 'elimina'; id: string }
+export type Scrittura =
+  /** `modifica`: la riga c'era già (corretta, o rimessa con Annulla), quindi non è una riga in più nei conti. */
+  | { tipo: 'salva'; voce: Voce; modifica?: true }
+  | { tipo: 'elimina'; id: string }
 
 export function idDi(scrittura: Scrittura): string {
   return scrittura.tipo === 'salva' ? scrittura.voce.id : scrittura.id

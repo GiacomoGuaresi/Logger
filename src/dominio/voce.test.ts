@@ -35,6 +35,14 @@ describe('nuovaVoce', () => {
     expect(nuovaVoce({ soggetto: 'x'.repeat(50), chiave: 'x'.repeat(50), valore: 'x'.repeat(200) }, ORA, ID).ok).toBe(true)
   })
 
+  it('una data nel futuro no, adesso e prima sì', () => {
+    const campi = { soggetto: 'moto', chiave: 'km', valore: '1' }
+    expect(nuovaVoce(campi, new Date(ORA.getTime() + 5 * 60_000), ID, ORA)).toEqual({ ok: false, errore: 'La data è nel futuro' })
+    expect(nuovaVoce(campi, new Date(ORA.getTime() + 30_000), ID, ORA).ok).toBe(true)
+    expect(nuovaVoce(campi, new Date('2025-01-01T00:00:00Z'), ID, ORA).ok).toBe(true)
+    expect(nuovaVoce(campi, new Date('rovinata'), ID, ORA)).toEqual({ ok: false, errore: 'Data non valida' })
+  })
+
   it('genera un id nuovo ogni volta', () => {
     const a = nuovaVoce({ soggetto: 'moto', chiave: 'km', valore: '1' })
     const b = nuovaVoce({ soggetto: 'moto', chiave: 'km', valore: '1' })

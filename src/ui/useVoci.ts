@@ -47,6 +47,7 @@ export function useVoci() {
     chiudiDiario,
     mostraAltre: () => sincronizzatore.mostraAltre(),
     salva: (voce: Parameters<typeof sincronizzatore.salva>[0]) => sincronizzatore.salva(voce),
+    modifica: (voce: Parameters<typeof sincronizzatore.modifica>[0]) => sincronizzatore.modifica(voce),
     elimina: (id: string) => sincronizzatore.elimina(id),
   }
 }

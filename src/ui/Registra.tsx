@@ -4,6 +4,7 @@ import { Check, CloudUpload, RotateCcw } from 'lucide-react'
 import { conUnita, eNumero, unitaDi } from '../dominio/numero'
 import { chiaviUsate, confrontabile, soggettiUsati, ultimoValore, type Uso } from '../dominio/suggerimenti'
 import { LIMITI, nuovaVoce, type Voce } from '../dominio/voce'
+import { CampoQuando } from './CampoQuando'
 import { Scelte } from './Scelte'
 
 interface Props {
@@ -21,13 +22,16 @@ interface Props {
  * La schermata principale (docs/02-funzionalita.md#registra), pensata per il
  * pollice e fatta a passi: prima il soggetto, poi compare la chiave, poi il
  * valore con Salva. Soggetto e chiave si toccano, la tastiera si apre solo per
- * il valore, ed è quella numerica se l'ultimo valore era un numero. Dopo ogni
+ * il valore, ed è quella numerica se l'ultimo valore era un numero. La data è
+ * adesso, ma si può cambiare per registrare qualcosa a posteriori. Dopo ogni
  * riga il soggetto resta e si riparte dalla chiave.
  */
 export function Registra({ soggettoIniziale, usi, inAttesa, onSalva }: Props) {
   const [soggetto, setSoggetto] = useState(soggettoIniziale)
   const [chiave, setChiave] = useState('')
   const [valore, setValore] = useState('')
+  /** Quando è successo: `null` è adesso, il momento in cui si salva. */
+  const [quando, setQuando] = useState<Date | null>(null)
   /** Tastiera di testo anche dove l'ultimo valore era un numero, per scrivere "pieno". */
   const [aTesto, setATesto] = useState(false)
   const [errore, setErrore] = useState<string | null>(null)
@@ -89,7 +93,7 @@ export function Registra({ soggettoIniziale, usi, inAttesa, onSalva }: Props) {
   const salva = (evento: FormEvent) => {
     evento.preventDefault()
     setErrore(null)
-    const esito = nuovaVoce({ soggetto, chiave, valore: daSalvare })
+    const esito = nuovaVoce({ soggetto, chiave, valore: daSalvare }, quando ?? new Date())
     if (!esito.ok) {
       setErrore(esito.errore)
       return
@@ -99,6 +103,7 @@ export function Registra({ soggettoIniziale, usi, inAttesa, onSalva }: Props) {
     setChiave('')
     setValore('')
     setATesto(false)
+    setQuando(null)
     setSalvata(esito.voce)
     // Via la tastiera: la prossima riga si comincia toccando una chiave.
     campoValore.current?.blur()
@@ -130,6 +135,7 @@ export function Registra({ soggettoIniziale, usi, inAttesa, onSalva }: Props) {
       )}
       {chiave !== '' && (
         <div className="animate-entra flex flex-col gap-2">
+          <CampoQuando valore={quando} onCambia={setQuando} />
           <div className="flex min-h-9 items-center gap-2">
             <label htmlFor="valore" className="mr-auto">
               <span className="font-semibold">Valore</span> <span className="text-testo-tenue">· facoltativo</span>

@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { ChevronDown, ChevronLeft, CloudUpload, Plus, Trash2, X } from 'lucide-react'
+import { ChevronDown, ChevronLeft, CloudUpload, Plus, X } from 'lucide-react'
 import type { StatoVoci } from '../dati'
 import { ora, perGiornata } from '../dominio/diario'
 import { confrontabile } from '../dominio/suggerimenti'
 import type { Voce } from '../dominio/voce'
-import { Conferma } from './Conferma'
+import { Avviso } from './Avviso'
+import { ModificaVoce } from './ModificaVoce'
 import { indirizzi, indirizzoRegistra } from './rotta'
 
 interface Props {
@@ -16,6 +17,8 @@ interface Props {
   /** Le righe con una scrittura non ancora arrivata al Mac: hanno il segno "da inviare". */
   inAttesa: ReadonlySet<string>
   onMostraAltre: () => Promise<void>
+  /** Riscrive una riga che c'era già (corretta, o rimessa con Annulla). Va subito a schermo; senza rete parte dopo. */
+  onModifica: (voce: Voce) => void
   /** Va subito a schermo; se manca la rete parte dopo, da sola. */
   onElimina: (id: string) => void
   onRiprova: () => void
@@ -29,20 +32,23 @@ function descrivi(voce: Voce): string {
  * Il diario di un soggetto (docs/02-funzionalita.md#diario): le sue righe dalla
  * più recente, su una timeline verticale da scorrere: una tappa per giornata.
  * Il filtro sopra la timeline mostra una chiave sola alla volta. In cima si
- * torna all'elenco dei diari o si aggiunge una riga a questo soggetto. Il cestino, dietro una conferma,
- * serve per gli errori di battitura, anche senza rete.
+ * torna all'elenco dei diari o si aggiunge una riga a questo soggetto.
+ * Toccando una riga la si corregge, data compresa, o la si elimina: subito, con
+ * un avviso per annullare. Tutto funziona anche senza rete.
  */
-export function Diario({ soggetto, chiavi, stato, inAttesa, onMostraAltre, onElimina, onRiprova }: Props) {
-  const [daEliminare, setDaEliminare] = useState<Voce | null>(null)
+export function Diario({ soggetto, chiavi, stato, inAttesa, onMostraAltre, onModifica, onElimina, onRiprova }: Props) {
+  const [inModifica, setInModifica] = useState<Voce | null>(null)
+  /** L'ultima riga eliminata, finché si può ancora annullare. */
+  const [eliminata, setEliminata] = useState<Voce | null>(null)
   /** La chiave mostrata, o `null` per tutte. */
   const [filtro, setFiltro] = useState<string | null>(null)
   const [altreInCaricamento, setAltreInCaricamento] = useState(false)
   const [erroreAltre, setErroreAltre] = useState<string | null>(null)
 
-  const conferma = () => {
-    if (!daEliminare) return
-    onElimina(daEliminare.id)
-    setDaEliminare(null)
+  const elimina = (voce: Voce) => {
+    onElimina(voce.id)
+    setInModifica(null)
+    setEliminata(voce)
   }
 
   const voci =
@@ -152,21 +158,20 @@ export function Diario({ soggetto, chiavi, stato, inAttesa, onMostraAltre, onEli
                 </time>
                 <ul className="m-0 list-none divide-y divide-bordo/70 p-0">
                   {giornata.voci.map((voce) => (
-                    <li key={voce.id} className="flex min-h-11 items-center gap-2">
-                      <div className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-2" title={ora(voce)}>
-                        <span className="font-semibold break-words">{voce.chiave}</span>
-                        {voce.valore !== null && <span className="ml-auto text-base break-words tabular-nums">{voce.valore}</span>}
-                      </div>
-                      {inAttesa.has(voce.id) && (
-                        <CloudUpload className="size-4 shrink-0 text-ambra-scura" aria-label="Da inviare" role="img" />
-                      )}
+                    <li key={voce.id}>
                       <button
                         type="button"
-                        className="grid size-10 shrink-0 place-items-center rounded-[11px] text-testo-tenue/60 hover:bg-fondo hover:text-pericolo"
-                        aria-label={`Elimina ${descrivi(voce)}`}
-                        onClick={() => setDaEliminare(voce)}
+                        className="-ml-1 flex min-h-11 w-full items-center gap-2 rounded-lg py-1 pr-3 pl-1 text-left active:bg-fumo"
+                        aria-label={`Modifica ${descrivi(voce)}`}
+                        onClick={() => setInModifica(voce)}
                       >
-                        <Trash2 className="size-4" aria-hidden="true" />
+                        <span className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-2" title={ora(voce)}>
+                          <span className="font-semibold break-words">{voce.chiave}</span>
+                          {voce.valore !== null && <span className="ml-auto text-base break-words tabular-nums">{voce.valore}</span>}
+                        </span>
+                        {inAttesa.has(voce.id) && (
+                          <CloudUpload className="size-4 shrink-0 text-ambra-scura" aria-label="Da inviare" role="img" />
+                        )}
                       </button>
                     </li>
                   ))}
@@ -191,12 +196,29 @@ export function Diario({ soggetto, chiavi, stato, inAttesa, onMostraAltre, onEli
           {erroreAltre}
         </p>
       )}
-      {daEliminare && (
-        <Conferma titolo="Elimina riga" conferma="Elimina" pericolo onConferma={conferma} onAnnulla={() => setDaEliminare(null)}>
-          <p className="m-0">
-            Elimino <strong>{descrivi(daEliminare)}</strong> da {soggetto}? Non si torna indietro.
-          </p>
-        </Conferma>
+      {inModifica && (
+        <ModificaVoce
+          voce={inModifica}
+          onSalva={(voce) => {
+            onModifica(voce)
+            setInModifica(null)
+          }}
+          onElimina={elimina}
+          onChiudi={() => setInModifica(null)}
+        />
+      )}
+      {eliminata && (
+        <Avviso
+          key={eliminata.id}
+          testo={`Eliminata: ${descrivi(eliminata)}`}
+          azione="Annulla"
+          onAzione={() => {
+            // Stessa riga, stesso id e stessa data: torna com'era.
+            onModifica(eliminata)
+            setEliminata(null)
+          }}
+          onScade={() => setEliminata(null)}
+        />
       )}
     </div>
   )

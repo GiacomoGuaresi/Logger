@@ -21,7 +21,7 @@ export function App() {
   const rotta = useRotta()
   const [menuAperto, setMenuAperto] = useState(false)
   const chiudiMenu = useCallback(() => setMenuAperto(false), [])
-  const { soggetti, usi, diario, inAttesa, senzaRete, rifiutata, ricarica, apriDiario, chiudiDiario, mostraAltre, salva, elimina } =
+  const { soggetti, usi, diario, inAttesa, senzaRete, rifiutata, ricarica, apriDiario, chiudiDiario, mostraAltre, salva, modifica, elimina } =
     useVoci()
   const statoInstallazione = useInstallazione()
 
@@ -117,6 +117,7 @@ export function App() {
             stato={diario.stato}
             inAttesa={inAttesa}
             onMostraAltre={mostraAltre}
+            onModifica={modifica}
             onElimina={elimina}
             onRiprova={() => void ricarica()}
           />

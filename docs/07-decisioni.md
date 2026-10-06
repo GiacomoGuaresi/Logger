@@ -15,7 +15,7 @@
 | 2026-10-06 | **Una sola tabella**: niente tabelle di soggetti o chiavi, nascono la prima volta che si scrivono; i suggerimenti si calcolano dalle righe | deciso |
 | 2026-10-06 | Soggetti e chiavi confrontati **senza maiuscole e minuscole** | deciso |
 | 2026-10-06 | Lettura: **solo il diario**, dalla riga più recente, con eliminazione per correggere gli errori | deciso |
-| 2026-10-06 | La data è quella del momento in cui si scrive, **non modificabile** per ora | deciso |
+| 2026-10-06 | ~~La data è quella del momento in cui si scrive, **non modificabile** per ora~~ | superata il 2026-10-06 |
 | 2026-10-06 | **Prova in locale** prima di pubblicare: si vede se il progetto regge, poi si migra a Supabase | deciso |
 | 2026-10-06 | Database **SQLite sul Mac** (`dati/logger.db`), con `node:sqlite` di Node 24: nessuna dipendenza nativa | deciso |
 | 2026-10-06 | Un **piccolo server** dentro Vite (plugin `/api`), così Mac e telefono sulla stessa rete vedono gli stessi dati; scartato SQLite nel browser, che avrebbe tenuto dati separati per dispositivo | deciso |
@@ -38,3 +38,6 @@
 | 2026-10-06 | Diario come **timeline verticale**: una tappa per giornata, con la data gg/mm/aaaa e sotto le righe di quel giorno | deciso |
 | 2026-10-06 | **Filtro per chiave** nel diario: una **tendina nativa** con tutte le chiavi e il loro conto, una sola attiva, sulle righe già caricate (niente filtro lato server per ora); scartate le chip a scorrimento, che con tante chiavi ne nascondevano una parte | deciso |
 | 2026-10-06 | Icona Lucide **`notebook-pen`** al posto di `gauge`: il tachimetro legava l'app a moto e auto, il quaderno vale per qualunque cosa si registri | deciso |
+| 2026-10-06 | La data è **adesso** ma si può cambiare, in Registra (Ieri, Cambia) e nella modifica; mai nel futuro, controllato solo sul dispositivo che scrive, così un orologio un po' avanti non fa scartare righe dal server | deciso |
+| 2026-10-06 | **Modifica di una riga** dal diario: chiave, valore e data, non il soggetto; stesso id, quindi è una riscrittura idempotente come le altre e funziona senza rete | deciso |
+| 2026-10-06 | **Eliminare subito con Annulla** al posto della conferma: Annulla riscrive la stessa riga | deciso |

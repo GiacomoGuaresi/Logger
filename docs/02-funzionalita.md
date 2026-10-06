@@ -17,7 +17,7 @@
 | **Chiave** | sì | **pulsanti** con le chiavi già usate **con quel soggetto**, dalla più usata, ognuna col suo ultimo valore in piccolo ("Benzina 25€") |
 | **Valore** | no | testo libero, così com'è ("41000", "25€", "rabbocco mezzo litro"); il segnaposto mostra **l'ultimo valore** scritto per quel soggetto e quella chiave |
 
-- La **data** è quella del salvataggio; non si modifica (per ora).
+- La **data** è **adesso** (il momento in cui si salva), ma si può cambiare per registrare qualcosa a posteriori: nel passo del valore, la riga "🕒 Adesso" ha **Ieri** (stessa ora, ieri) e **Cambia**, che apre il selettore di data e ora del telefono. Una data scelta si vede in ambra ("Ieri 18:40"), con **Adesso ×** per tornare indietro; non può stare nel futuro. Dopo il salvataggio torna ad adesso.
 - **Pulsanti**: si vedono i 6 soggetti e le 12 chiavi più usati, gli altri con **Altre N**. Le scelte sono **solo quelle già inserite**, nessuna inventata. **+ Nuovo** / **+ Nuova** apre un campo che filtra i pulsanti mentre si scrive (prima le scelte che iniziano col testo, poi quelle che lo contengono); se il testo non c'è, compare **Nuova chiave «…»**, e Invio sceglie. A database vuoto il campo è già aperto. Cambiando soggetto la chiave si svuota.
 - **Dopo la chiave**: se la chiave ha già avuto un valore il fuoco va sul campo Valore e si apre la tastiera; se non ne ha mai avuti ("Controllo olio") la tastiera resta chiusa, basta toccare Salva.
 - **Valore numerico**: se l'ultimo valore è un numero, anche con un'unità breve dopo ("41000", "25€", "1,5 l", "2,4 bar"), si apre il **tastierino numerico** e l'unità si vede in fondo al campo: scrivendo solo un numero, si salva con l'unità ("27" → "27€"). **abc** passa alla tastiera con le lettere, per scrivere "pieno"; **123** torna al tastierino.
@@ -36,7 +36,8 @@ Un **diario per soggetto**, separato dagli altri: prima si sceglie il soggetto, 
 - **Il diario di un soggetto** (`#/diario/moto`): le sue righe, dalla più recente, su una **timeline verticale** da scorrere: una linea a sinistra con un pallino per **giornata** (ambra la più recente), e accanto una card con la data ("02/10/2026") e, sotto, le righe di quel giorno: chiave e valore a destra, se c'è. In cima **‹ Diari** per tornare all'elenco e **+ Riga** per aprire Registra già su questo soggetto, partendo dalla chiave.
 - **Filtro per chiave**: sopra la timeline una **tendina** "Tutte le chiavi", con le chiavi del soggetto dalla più usata e quante righe ha ciascuna ("Benzina (3)"). Sul telefono apre il selettore di sistema, che le mostra tutte anche se sono tante. Si sceglie **una chiave alla volta**; la tendina diventa grafite e accanto compare **×** per tornare a tutte. Il filtro vale sulle righe già caricate: se non ne trova, suggerisce "Mostra altre". Cambiando diario il filtro si azzera.
 - "moto" e "Moto" sono lo stesso diario: si raccolgono tutte le forme scritte, e il titolo è quella usata più spesso.
-- Il cestino **elimina** una riga dopo una conferma: serve per gli errori di battitura.
+- **Toccando una riga** si apre la modifica: chiave, valore e data (con il selettore del telefono). Il soggetto non cambia, così la riga resta nel suo diario; se la data cambia, la riga si sposta nella giornata giusta.
+- Dalla modifica si **elimina**: subito, senza conferma, e in basso compare "Eliminata: … · **Annulla**" per 5 secondi, che rimette la riga com'era (stesso id e stessa data). Modifica, eliminazione e Annulla funzionano anche senza rete.
 - Si caricano le ultime 100 righe del soggetto; "Mostra altre" carica le precedenti.
 
 ## Senza rete
@@ -51,7 +52,6 @@ Arriva allo step 4 della [roadmap](06-roadmap.md). Durante la prova in locale se
 
 Solo appunti, senza impegno: entrano nella roadmap quando servono davvero.
 
-- Modifica di una riga, data compresa (per registrare qualcosa a posteriori)
 - Note più lunghe su una riga
 - Valori numerici riconosciuti (es. "41000" sotto "km") per vedere l'ultimo km, i km percorsi, la spesa
 - Promemoria ("Controllo olio" più vecchio di 30 giorni)
