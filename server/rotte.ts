@@ -42,7 +42,12 @@ export async function gestisci(archivio: Archivio, { metodo, url, corpo }: Richi
     if (prima !== undefined && Number.isNaN(Date.parse(prima))) return errore(400, 'Data non valida')
     return {
       stato: 200,
-      corpo: await archivio.leggi({ limite, prima: prima && new Date(prima).toISOString() }),
+      corpo: await archivio.leggi({
+        limite,
+        prima: prima && new Date(prima).toISOString(),
+        // `?soggetto=moto&soggetto=Moto`: solo quel diario. Senza, tutte le righe.
+        soggetti: indirizzo.searchParams.has('soggetto') ? indirizzo.searchParams.getAll('soggetto') : undefined,
+      }),
     }
   }
 

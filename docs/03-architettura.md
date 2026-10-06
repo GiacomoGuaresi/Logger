@@ -25,7 +25,7 @@ flowchart LR
 
    | Rotta | Cosa fa |
    |---|---|
-   | `GET /api/voci?prima=<quando>&limite=100` | il diario, dalla riga più recente; `prima` serve a "Mostra altre" |
+   | `GET /api/voci?soggetto=moto&soggetto=Moto&prima=<quando>&limite=100` | il diario di un soggetto (tutte le forme scritte), dalla riga più recente; `prima` serve a "Mostra altre"; senza `soggetto`, le righe di tutti |
    | `PUT /api/voci/:id` | salva una riga; se l'`id` esiste già la sovrascrive (upsert), così rimandarla non crea doppioni |
    | `DELETE /api/voci/:id` | elimina una riga; eliminarne una che non c'è non è un errore |
    | `GET /api/usi` | il riepilogo di tutte le righe: una voce per coppia soggetto · chiave, con quante volte, l'ultima volta e l'ultimo valore non vuoto |
@@ -59,8 +59,8 @@ I **test di contratto** (`src/dati/contratto.ts`, `verificaContratto(apriVuoto)`
 Arriva allo step 4 ([06](06-roadmap.md)). Serve quando il telefono perde il Wi‑Fi di casa con l'app aperta, e servirà ancora di più con Supabase. Lo schema è quello di Grocery (`Grocery/src/storage/memoriaLocale.ts` e `sincronizzatore.ts`), più semplice:
 
 - **Memoria locale** in `localStorage`, dietro un'interfaccia `Scaffale` (nei test una `Map`):
-  - `logger.voci`: le ultime righe lette, per aprire il diario subito;
-  - `logger.usi`: il riepilogo per le scelte di Registra;
+  - `logger.diari`: le ultime righe lette di ogni diario, per aprirlo subito;
+  - `logger.usi`: il riepilogo per le card dei diari e le scelte di Registra;
   - `logger.coda`: le scritture non ancora arrivate all'archivio, dalla più vecchia;
   - `logger.soggetto`: l'ultimo soggetto usato.
 - Ogni **riga ha l'`id` generato dal browser** (`crypto.randomUUID()`) e la data del momento in cui si scrive: una scrittura in coda è un `salva` o un `elimina` per `id`, quindi **rimandarla due volte non fa danni**, e la data resta quella vera anche se arriva dopo.

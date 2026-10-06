@@ -26,10 +26,13 @@
 
 ## Diario
 
-- **Tutte le righe**, dalla più recente, raggruppate per giorno ("Oggi", "Ieri", "lunedì 5 ottobre").
-- Ogni riga: ora, soggetto, chiave, valore se c'è.
-- Un tocco lungo, o un cestino, **elimina** una riga dopo una conferma: serve per gli errori di battitura.
-- Si caricano le ultime 100 righe; "Mostra altre" carica le precedenti.
+Un **diario per soggetto**, separato dagli altri: prima si sceglie il soggetto, poi si leggono le sue righe.
+
+- **Scegli il diario**: una card per soggetto, in cima quello dove si è scritto per ultimo. Ogni card dice quante righe ha, quando è stata scritta l'ultima ("oggi 08:12", "ieri 18:40", "5 ott") e l'ultimo valore delle tre chiavi più usate ("km · 41000").
+- **Il diario di un soggetto** (`#/diario/moto`): le sue righe, dalla più recente, raggruppate per giorno ("Oggi", "Ieri", "lunedì 5 ottobre"). Ogni riga: ora, chiave, valore se c'è. In cima **‹ Diari** per tornare all'elenco e **+ Riga** per aprire Registra già su questo soggetto.
+- "moto" e "Moto" sono lo stesso diario: si raccolgono tutte le forme scritte, e il titolo è quella usata più spesso.
+- Il cestino **elimina** una riga dopo una conferma: serve per gli errori di battitura.
+- Si caricano le ultime 100 righe del soggetto; "Mostra altre" carica le precedenti.
 
 ## Senza rete
 
@@ -43,7 +46,7 @@ Arriva allo step 4 della [roadmap](06-roadmap.md). Durante la prova in locale se
 
 Solo appunti, senza impegno: entrano nella roadmap quando servono davvero.
 
-- Filtro del diario per soggetto o per chiave
+- Filtro del diario per chiave
 - Modifica di una riga, data compresa (per registrare qualcosa a posteriori)
 - Note più lunghe su una riga
 - Valori numerici riconosciuti (es. "41000" sotto "km") per vedere l'ultimo km, i km percorsi, la spesa

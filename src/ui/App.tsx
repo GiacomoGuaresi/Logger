@@ -1,5 +1,7 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { CloudOff, CloudUpload, Gauge, Menu } from 'lucide-react'
+import { trovaSoggetto } from '../dominio/soggetti'
+import { Diari } from './Diari'
 import { Diario } from './Diario'
 import { Installa } from './Installa'
 import { installa, useInstallazione } from './installazione'
@@ -18,8 +20,19 @@ export function App() {
   const rotta = useRotta()
   const [menuAperto, setMenuAperto] = useState(false)
   const chiudiMenu = useCallback(() => setMenuAperto(false), [])
-  const { stato, usi, inAttesa, senzaRete, rifiutata, ricarica, mostraAltre, salva, elimina } = useVoci()
+  const { soggetti, usi, diario, inAttesa, senzaRete, rifiutata, ricarica, apriDiario, chiudiDiario, mostraAltre, salva, elimina } =
+    useVoci()
   const statoInstallazione = useInstallazione()
+
+  // Il diario si apre (e si legge) quando l'indirizzo ne nomina uno.
+  useEffect(() => {
+    if (rotta.soggetto) void apriDiario(rotta.soggetto)
+    else chiudiDiario()
+  }, [rotta.soggetto, apriDiario, chiudiDiario])
+
+  const elenco = soggetti.fase === 'pronto' ? soggetti.elenco : []
+  /** Il titolo del diario: la forma scritta più spesso, se il soggetto c'è già. */
+  const titolo = rotta.soggetto ? (trovaSoggetto(elenco, rotta.soggetto)?.nome ?? rotta.soggetto) : ''
 
   return (
     <div className="sfondo-officina flex min-h-dvh flex-col lg:grid lg:grid-cols-[256px_minmax(0,1fr)] lg:grid-rows-[auto_1fr]">
@@ -49,7 +62,7 @@ export function App() {
       </header>
       <MenuLaterale
         aperto={menuAperto}
-        corrente={rotta}
+        corrente={rotta.pagina}
         onChiudi={chiudiMenu}
         onInstalla={
           statoInstallazione === 'installata'
@@ -64,7 +77,7 @@ export function App() {
         }
       />
       <main className="mx-auto w-full max-w-[640px] flex-1 p-3 pb-[calc(12px+env(safe-area-inset-bottom))] lg:col-start-2">
-        {senzaRete && stato.fase === 'pronto' && (
+        {senzaRete && soggetti.fase === 'pronto' && (
           <p className="mt-0 mb-3 flex items-start gap-2 rounded-[11px] bg-fumo px-3 py-2 text-sm text-testo-tenue" role="status">
             <CloudOff className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
             <span>Il Mac non risponde: vedi le righe salvate su questo dispositivo, quelle nuove partono quando torna.</span>
@@ -75,25 +88,29 @@ export function App() {
             Una riga è stata rifiutata e non è stata salvata: {rifiutata}
           </p>
         )}
-        {rotta === 'installa' && <Installa stato={statoInstallazione} />}
+        {rotta.pagina === 'installa' && <Installa stato={statoInstallazione} />}
         {/* Registra si apre subito anche mentre le righe arrivano: le scelte vengono dalla memoria del dispositivo. */}
-        {rotta === 'registra' && <Registra usi={usi} inAttesa={inAttesa} onSalva={salva} />}
-        {rotta === 'diario' && stato.fase === 'caricamento' && <p className="mt-8 text-center text-testo-tenue">Carico…</p>}
-        {rotta === 'diario' && stato.fase === 'errore' && (
+        {rotta.pagina === 'registra' && <Registra usi={usi} inAttesa={inAttesa} onSalva={salva} />}
+        {rotta.pagina === 'diario' && !rotta.soggetto && soggetti.fase === 'caricamento' && (
+          <p className="mt-8 text-center text-testo-tenue">Carico…</p>
+        )}
+        {rotta.pagina === 'diario' && !rotta.soggetto && soggetti.fase === 'errore' && (
           <p className="mt-8 px-3 text-center text-testo-tenue" role="alert">
-            {stato.messaggio}{' '}
+            {soggetti.messaggio}{' '}
             <button type="button" className="font-semibold text-grafite underline" onClick={() => void ricarica()}>
               Riprova
             </button>
           </p>
         )}
-        {rotta === 'diario' && stato.fase === 'pronto' && (
+        {rotta.pagina === 'diario' && !rotta.soggetto && soggetti.fase === 'pronto' && <Diari soggetti={soggetti.elenco} />}
+        {rotta.pagina === 'diario' && rotta.soggetto && diario && (
           <Diario
-            voci={stato.voci}
-            finite={stato.finite}
+            soggetto={titolo}
+            stato={diario.stato}
             inAttesa={inAttesa}
             onMostraAltre={mostraAltre}
             onElimina={elimina}
+            onRiprova={() => void ricarica()}
           />
         )}
       </main>

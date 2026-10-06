@@ -1,18 +1,18 @@
 import { useEffect, useRef } from 'react'
 import { BookOpen, Download, PenLine, X, type LucideIcon } from 'lucide-react'
-import { indirizzi, type Rotta } from './rotta'
+import { indirizzi, type Pagina } from './rotta'
 
 /** Da questa larghezza il menu è sempre aperto: la stessa soglia di `lg:`. */
 const SEMPRE_APERTO = '(min-width: 1024px)'
 
-const sezioni: { rotta: Rotta; etichetta: string; icona: LucideIcon }[] = [
+const sezioni: { rotta: Pagina; etichetta: string; icona: LucideIcon }[] = [
   { rotta: 'registra', etichetta: 'Registra', icona: PenLine },
   { rotta: 'diario', etichetta: 'Diario', icona: BookOpen },
 ]
 
 interface Props {
   aperto: boolean
-  corrente: Rotta
+  corrente: Pagina
   onChiudi: () => void
   /** In fondo al menu "Installa l'app", finché l'app non è installata. Se manca, la voce non c'è. */
   onInstalla?: () => void

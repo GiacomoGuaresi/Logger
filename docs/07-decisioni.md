@@ -24,7 +24,8 @@
 | 2026-10-06 | **Niente passphrase** durante la prova: il server è raggiungibile solo dalla rete di casa | deciso |
 | 2026-10-06 | Restano la **coda senza rete** (step 4) e la **PWA** (step 5, con HTTPS locale via mkcert) | deciso |
 | 2026-10-06 | Colore **grafite** con accento **ambra**, icona Lucide `gauge`, sfondo doodle strada e officina | deciso |
-| 2026-10-06 | **Diario unico** con tutti i soggetti; il filtro per soggetto resta tra le idee per dopo | deciso |
+| 2026-10-06 | ~~Diario unico con tutti i soggetti~~ | superata il 2026-10-06 |
+| 2026-10-06 | **Un diario per soggetto**: prima si sceglie il soggetto da una card, poi si vedono solo le sue righe; ogni diario si legge dall'archivio per conto suo | deciso |
 | 2026-10-06 | Senza rete: la riga si **salva subito** a schermo e in coda, senza aspettare il server; la conferma dice "da inviare" finché non arriva | deciso |
 | 2026-10-06 | Soggetto e chiave come **select con ricerca** tra quelli già inseriti, senza valori predefiniti; un valore nuovo si aggiunge dalla stessa select | deciso |
 | 2026-10-06 | Le scelte vengono da un **riepilogo di tutte le righe** (`usi`), non dalle ultime 100 lette | deciso |

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ora, perGiorno } from './diario'
+import { ora, perGiorno, quandoBreve } from './diario'
 import type { Voce } from './voce'
 
 const FUSO = 'Europe/Rome'
@@ -47,5 +47,14 @@ describe('perGiorno', () => {
 describe('ora', () => {
   it('scrive l ora locale a due cifre', () => {
     expect(ora(alle('2026-10-06T06:05:00.000Z'), FUSO)).toBe('08:05')
+  })
+})
+
+describe('quandoBreve', () => {
+  it('oggi e ieri con l ora, poi giorno e mese, con l anno solo se diverso', () => {
+    expect(quandoBreve('2026-10-06T06:12:00.000Z', ADESSO, FUSO)).toBe('oggi 08:12')
+    expect(quandoBreve('2026-10-05T16:40:00.000Z', ADESSO, FUSO)).toBe('ieri 18:40')
+    expect(quandoBreve('2026-10-01T12:00:00.000Z', ADESSO, FUSO)).toBe('1 ott')
+    expect(quandoBreve('2025-12-31T12:00:00.000Z', ADESSO, FUSO)).toBe('31 dic 2025')
   })
 })

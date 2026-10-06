@@ -32,13 +32,23 @@ export class ArchivioSqlite implements Archivio {
     return new ArchivioSqlite(new DatabaseSync(percorso))
   }
 
-  async leggi({ prima, limite }: OpzioniLettura): Promise<Voce[]> {
+  async leggi({ soggetti, prima, limite }: OpzioniLettura): Promise<Voce[]> {
+    if (soggetti?.length === 0) return []
+    const condizioni: string[] = []
+    const parametri: string[] = []
+    if (soggetti) {
+      condizioni.push(`soggetto in (${soggetti.map(() => '?').join(', ')})`)
+      parametri.push(...soggetti)
+    }
     // `quando` è ISO UTC con i millisecondi: come testo si ordina bene.
-    const righe = prima
-      ? this.db
-          .prepare('select id, quando, soggetto, chiave, valore from voci where quando < ? order by quando desc, id desc limit ?')
-          .all(prima, limite)
-      : this.db.prepare('select id, quando, soggetto, chiave, valore from voci order by quando desc, id desc limit ?').all(limite)
+    if (prima) {
+      condizioni.push('quando < ?')
+      parametri.push(prima)
+    }
+    const dove = condizioni.length > 0 ? `where ${condizioni.join(' and ')}` : ''
+    const righe = this.db
+      .prepare(`select id, quando, soggetto, chiave, valore from voci ${dove} order by quando desc, id desc limit ?`)
+      .all(...parametri, limite)
     return righe.map((r) => ({
       id: String(r.id),
       quando: String(r.quando),

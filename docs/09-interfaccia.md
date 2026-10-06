@@ -4,7 +4,7 @@
 
 Stessa struttura di Grocery, Projects e Trekking, con un colore diverso:
 - **intestazione piena** nel colore dell'app, con ☰ a sinistra;
-- **menu laterale** a scomparsa, sempre aperto su schermi larghi: **Registra**, **Diario** e, dallo step 5, **Installa l'app**;
+- **menu laterale** a scomparsa, sempre aperto su schermi larghi: **Registra**, **Diario** e **Installa l'app**;
 - stesso font e stesse icone Lucide;
 - solo **italiano** e solo **tema chiaro**.
 
@@ -32,5 +32,6 @@ Disegno Lucide **`gauge`** (contachilometri) panna su grafite `#3f444e`, in `pub
 | Schermata | Contenuto |
 |---|---|
 | **Registra** (`#/`, pagina principale) | tre campi uno sotto l'altro: **Soggetto** e **Chiave** sono select con ricerca (elenco a tendina sotto il campo, voce scelta col segno ✓, "Nuovo … «testo»" in fondo), **Valore** è libero con l'ultimo valore come segnaposto; **Salva** grande in basso |
-| **Diario** (`#/diario`) | righe raggruppate per giorno, ognuna con ora, soggetto in piccolo, chiave in evidenza, valore a destra; cestino con conferma; "Mostra altre" in fondo |
+| **Diari** (`#/diario`) | "Scegli il diario": una card bianca per soggetto con nome, ultima volta, numero di righe e le chiavi più usate col loro ultimo valore; freccia a destra |
+| **Diario di un soggetto** (`#/diario/<soggetto>`) | in cima ‹ Diari, il nome del soggetto e + Riga; righe raggruppate per giorno, ognuna con ora, chiave in evidenza, valore a destra; cestino con conferma; "Mostra altre" in fondo |
 | **Accesso** | dalla Fase 2: solo passphrase, come le altre app |

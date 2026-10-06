@@ -6,10 +6,13 @@ const RIPROVA_MS = 30_000
 
 const iscriviti = (avvisa: () => void) => sincronizzatore.iscriviti(avvisa)
 const leggi = () => sincronizzatore.leggi()
+// Stabili, per gli effetti che aprono e chiudono il diario seguendo l'indirizzo.
+const apriDiario = (soggetto: string) => sincronizzatore.apriDiario(soggetto)
+const chiudiDiario = () => sincronizzatore.chiudiDiario()
 
 /**
- * Le righe del diario, condivise tra Registra (per i suggerimenti) e Diario
- * (docs/03-architettura.md#senza-rete). All'apertura si vedono subito quelle in
+ * Il riepilogo (card dei diari e scelte di Registra) e il diario aperto
+ * (docs/03-architettura.md#senza-rete). All'apertura si vede subito quello in
  * memoria; si rilegge l'archivio, e si manda la coda, quando l'app si apre,
  * torna la rete o torna in primo piano.
  */
@@ -40,6 +43,8 @@ export function useVoci() {
   return {
     ...istantanea,
     ricarica: () => sincronizzatore.aggiorna(),
+    apriDiario,
+    chiudiDiario,
     mostraAltre: () => sincronizzatore.mostraAltre(),
     salva: (voce: Parameters<typeof sincronizzatore.salva>[0]) => sincronizzatore.salva(voce),
     elimina: (id: string) => sincronizzatore.elimina(id),
