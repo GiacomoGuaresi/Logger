@@ -102,7 +102,7 @@ Logger/
 ├── docs/
 ├── index.html · vite.config.ts · package.json · tsconfig.json
 ├── server/                # pluginApi.ts, rotte.ts, archivioSqlite.ts (+ test)
-├── scripts/               # certificati.ts, genera-sfondo.ts
+├── scripts/               # certificati.ts, genera-sfondo.ts, storico-di-prova.ts
 ├── dati/                  # logger.db, escluso da git
 ├── certificati/           # cert.pem e key.pem per l'HTTPS, esclusi da git
 ├── public/                # icone PWA (step 5)

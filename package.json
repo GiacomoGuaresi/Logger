@@ -14,7 +14,8 @@
     "test:watch": "vitest",
     "icone": "pwa-assets-generator",
     "sfondo": "node scripts/genera-sfondo.ts",
-    "certificati": "node scripts/certificati.ts"
+    "certificati": "node scripts/certificati.ts",
+    "storico": "node scripts/storico-di-prova.ts"
   },
   "dependencies": {
     "lucide-react": "^1.46.0",

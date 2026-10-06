@@ -22,7 +22,12 @@ create index if not exists voci_quando on voci (quando desc);
 `
 
 export class ArchivioSqlite implements Archivio {
-  constructor(private readonly db: DatabaseSync) {
+  // Campo esplicito, non `private readonly db` nel costruttore: così il file
+  // gira anche con Node da solo (scripts/storico-di-prova.ts).
+  private readonly db: DatabaseSync
+
+  constructor(db: DatabaseSync) {
+    this.db = db
     db.exec(SCHEMA)
   }
 

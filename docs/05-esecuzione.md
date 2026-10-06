@@ -13,6 +13,7 @@ Serve **Node 24** (`node:sqlite`). Nessuna variabile d'ambiente, nessun servizio
 | `npm run certificati` | crea il certificato HTTPS per la rete di casa (serve mkcert) |
 | `npm run icone` | rigenera le icone della PWA da `public/icona.svg` |
 | `npm run sfondo` | rigenera lo sfondo doodle `src/ui/sfondo-officina.svg` |
+| `npm run storico` | scrive un mese di righe inventate per C3 e Guzzi Breva ([dati di prova](#dati-di-prova)) |
 
 - **Dal telefono**: stessa rete Wi‑Fi del Mac, indirizzo `http://<IP del Mac>:<porta>/`, stampato da Vite alla voce *Network*. Conviene dare al Mac un IP fisso sul router, così il segnalibro sul telefono non cambia.
 - Il Mac deve essere **acceso e con il server avviato** quando si scrive; se non lo è, le righe restano in coda sul telefono e partono quando il Mac torna raggiungibile.
@@ -22,6 +23,15 @@ Serve **Node 24** (`node:sqlite`). Nessuna variabile d'ambiente, nessun servizio
 - File: `dati/logger.db`, creato al primo avvio, **escluso da git**.
 - **Backup**: copiare il file con il server fermo (o con `sqlite3 dati/logger.db ".backup copia.db"` anche a server avviato).
 - Per guardarci dentro: `sqlite3 dati/logger.db 'select * from voci order by quando desc limit 20'`.
+
+### Dati di prova
+
+`npm run storico` riempie `dati/logger.db` con un mese di righe **inventate**, fino a ieri, per provare diari, card e scelte con dati verosimili: per **C3** Km, Benzina, Pedaggio, Controllo Olio, Pressione gomme e Lavaggio; per **Guzzi Breva** i giri del weekend con Km, Benzina, Controllo Olio (anche con un valore), Pressione gomme e Lavaggio.
+
+- I km crescono giorno per giorno e finiscono sotto l'ultimo "Km" scritto a mano per quel soggetto.
+- Le righe generate hanno gli id che iniziano con `00000000-0000-4000-8000-`: rilanciando lo script si tolgono e si riscrivono, senza toccare quelle scritte dall'app. `npm run storico -- 60` genera 60 giorni, `npm run storico -- via` toglie solo le righe generate.
+- Il server può restare avviato; l'app le vede al prossimo aggiornamento (ricaricando la pagina o tornando in primo piano).
+- Oggi il database contiene solo righe di prova, scritte a mano o generate: al passaggio in produzione si cancellano tutte.
 
 ### HTTPS per la PWA
 
