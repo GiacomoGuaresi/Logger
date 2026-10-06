@@ -34,7 +34,7 @@ export default defineConfig({
       manifest: {
         name: 'Logger',
         short_name: 'Logger',
-        description: 'Diario minimo di moto, auto e altro',
+        description: 'Diario minimo di tutto quello che vuoi tenere a mente',
         lang: 'it',
         display: 'standalone',
         // Come l'intestazione e lo sfondo dell'app (src/index.css).

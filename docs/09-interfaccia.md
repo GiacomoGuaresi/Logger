@@ -25,7 +25,7 @@ Disegno Lucide **`notebook-pen`** (quaderno con la penna): quaderno panna e penn
 
 ## Sfondo
 
-**Sfondo doodle** a tema strada e officina (chiavi inglesi, gocce d'olio, pompe di benzina, ruote, caschi), generato da `scripts/genera-sfondo.ts` con un seed fisso, come nelle altre app. Arriva allo step 5.
+**Sfondo doodle** a tema diario (quaderno, calendario, orologio, lista di spunte, etichetta, segnalibro), generico come lo scopo dell'app, generato da `scripts/genera-sfondo.ts` con un seed fisso in `src/ui/sfondo-diario.svg`, come nelle altre app.
 
 ## Schermate
 

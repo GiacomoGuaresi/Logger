@@ -2,10 +2,10 @@
 
 ## Scopo
 
-**Logger** è un diario minimo. Il primo uso è tenere traccia di **moto e auto**: i km, i rifornimenti, i controlli dell'olio e le altre cose che si fanno. Serve a scriverle **nel momento in cui succedono** (al distributore, in garage, appena parcheggiato) e a rileggerle dopo.
+**Logger** è un diario minimo di **qualunque cosa** valga la pena tenere a mente: i km e i rifornimenti della moto, il peso, le piante innaffiate, le bollette pagate. Il primo uso sono **moto e auto**, ma l'app non sa niente di motori. Serve a scrivere le cose **nel momento in cui succedono** (o poco dopo, con la data giusta) e a rileggerle dopo.
 
 Ogni registrazione è una riga **soggetto · chiave · valore**, con la data:
-- il **soggetto** è la cosa di cui si parla: "moto", "auto", domani altro;
+- il **soggetto** è la cosa di cui si parla: "moto", "auto", "casa", "io";
 - la **chiave** è cosa è successo: "km", "Benzina", "Controllo olio";
 - il **valore** è facoltativo e libero: "41000", "25€". Se manca, la riga dice solo che la cosa è stata fatta.
 

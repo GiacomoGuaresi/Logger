@@ -1,6 +1,6 @@
 # Logger
 
-Diario minimo di quello che succede a **moto e auto**, e domani ad altro. Si sceglie un soggetto, si scrive una **chiave** e, se serve, un **valore**, e l'app salva la riga con la data:
+Diario minimo di **qualunque cosa** valga la pena tenere a mente: la moto e l'auto per cominciare, poi quello che serve. Si sceglie un soggetto, si scrive una **chiave** e, se serve, un **valore**, e l'app salva la riga con la data:
 
 ```
 moto · km             · 41000

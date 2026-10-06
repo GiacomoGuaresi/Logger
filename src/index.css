@@ -67,12 +67,12 @@ body {
   font-size: 14px;
 }
 
-/* Poche icone grandi a tema strada e officina, appena più scure del fondo,
+/* Poche icone grandi a tema diario, appena più scure del fondo,
    ripetute senza giunture: generate da scripts/genera-sfondo.ts (npm run
    sfondo). Moduli e diario restano su bianco pieno, quindi lo sfondo si vede
    solo ai margini. */
-.sfondo-officina {
-  background: var(--color-fondo) url('./ui/sfondo-officina.svg') 0 0 / 480px 480px repeat;
+.sfondo-diario {
+  background: var(--color-fondo) url('./ui/sfondo-diario.svg') 0 0 / 480px 480px repeat;
 }
 
 /* I campi di testo restano a 16px: sotto, iOS zooma da solo al tocco. */

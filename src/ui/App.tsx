@@ -37,7 +37,7 @@ export function App() {
   const titolo = soggettoDiario ? (trovaSoggetto(elenco, soggettoDiario)?.nome ?? soggettoDiario) : ''
 
   return (
-    <div className="sfondo-officina flex min-h-dvh flex-col lg:grid lg:grid-cols-[256px_minmax(0,1fr)] lg:grid-rows-[auto_1fr]">
+    <div className="sfondo-diario flex min-h-dvh flex-col lg:grid lg:grid-cols-[256px_minmax(0,1fr)] lg:grid-rows-[auto_1fr]">
       <header className="sticky top-0 z-1 flex items-center gap-1 border-b border-grafite-scura bg-grafite pt-[env(safe-area-inset-top)] pr-3 pl-1 text-panna lg:col-span-full lg:min-h-11 lg:pl-3">
         <button
           className="grid size-11 place-items-center rounded-[11px] active:bg-grafite-scura lg:hidden"

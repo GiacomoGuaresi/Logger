@@ -1,23 +1,23 @@
 /**
  * Genera lo sfondo del contenuto (docs/09-interfaccia.md, "Sfondo"): poche icone
- * grandi a tema strada e officina, appena più scure del fondo, sparse a caso su
+ * grandi a tema diario (quaderni, calendari, orologi, spunte), appena più scure del fondo, sparse a caso su
  * un riquadro che si ripete senza giunture. Stesso sistema delle altre app di casa.
  *
  * Le icone sono quelle dell'app (lucide-react), disegnate col componente stesso:
  * lo sfondo resta coerente col resto dell'interfaccia. Il seed è fisso, quindi
  * rilanciando lo script esce sempre lo stesso sfondo.
  *
- * Uso: npm run sfondo  →  src/ui/sfondo-officina.svg
+ * Uso: npm run sfondo  →  src/ui/sfondo-diario.svg
  */
 import { writeFileSync } from 'node:fs'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
-import { Bike, CarFront, Droplet, Fuel, Gauge, Wrench, type LucideIcon } from 'lucide-react'
+import { Bookmark, CalendarDays, Clock, ListChecks, NotebookPen, Tag, type LucideIcon } from 'lucide-react'
 
-const USCITA = new URL('../src/ui/sfondo-officina.svg', import.meta.url)
+const USCITA = new URL('../src/ui/sfondo-diario.svg', import.meta.url)
 
-/** Solo icone a tema strada e officina: contachilometri, benzina, olio, chiave inglese, moto, auto. */
-const ICONE: LucideIcon[] = [Gauge, Fuel, Droplet, Wrench, Bike, CarFront]
+/** Icone generiche da diario, come lo scopo dell'app: si registra qualunque cosa. */
+const ICONE: LucideIcon[] = [NotebookPen, CalendarDays, Clock, ListChecks, Tag, Bookmark]
 
 const LATO = 480 // px del riquadro, mostrato in CSS a questa grandezza
 const QUANTE = 12 // icone per riquadro: poche, per non affollare le tabelle

@@ -23,7 +23,7 @@
 | 2026-10-06 | **Niente pipeline né pubblicazione online** durante la prova; git **solo locale** | deciso |
 | 2026-10-06 | **Niente passphrase** durante la prova: il server è raggiungibile solo dalla rete di casa | deciso |
 | 2026-10-06 | Restano la **coda senza rete** (step 4) e la **PWA** (step 5, con HTTPS locale via mkcert) | deciso |
-| 2026-10-06 | Colore **grafite** con accento **ambra**, ~~icona Lucide `gauge`~~, sfondo doodle strada e officina | deciso, icona superata il 2026-10-06 |
+| 2026-10-06 | Colore **grafite** con accento **ambra**, ~~icona Lucide `gauge`~~, ~~sfondo doodle strada e officina~~ | deciso, icona e sfondo superati il 2026-10-06 |
 | 2026-10-06 | ~~Diario unico con tutti i soggetti~~ | superata il 2026-10-06 |
 | 2026-10-06 | Ogni diario ha la sua **voce nel menu laterale**, in ordine alfabetico (le card restano dalla più recente) | deciso |
 | 2026-10-06 | **Un diario per soggetto**: prima si sceglie il soggetto da una card, poi si vedono solo le sue righe; ogni diario si legge dall'archivio per conto suo | deciso |
@@ -41,3 +41,4 @@
 | 2026-10-06 | La data è **adesso** ma si può cambiare, in Registra (Ieri, Cambia) e nella modifica; mai nel futuro, controllato solo sul dispositivo che scrive, così un orologio un po' avanti non fa scartare righe dal server | deciso |
 | 2026-10-06 | **Modifica di una riga** dal diario: chiave, valore e data, non il soggetto; stesso id, quindi è una riscrittura idempotente come le altre e funziona senza rete | deciso |
 | 2026-10-06 | **Eliminare subito con Annulla** al posto della conferma: Annulla riscrive la stessa riga | deciso |
+| 2026-10-06 | **Tema generico**: sfondo doodle a tema diario e descrizione "Diario minimo di tutto quello che vuoi tenere a mente", come l'icona `notebook-pen` | deciso |

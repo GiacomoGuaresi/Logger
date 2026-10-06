@@ -28,7 +28,7 @@ Niente pubblicazione online né pipeline finché dura la prova. Dopo lo step 5 l
 - [ ] **5 · Rifinitura**: `npm run prova`, HTTPS locale con mkcert, PWA installabile sul telefono, icona e sfondo; poi **qualche settimana di uso reale**
   - [x] `npm run prova` (build + `vite preview --host`), con l'API servita anche dal preview
   - [x] PWA con `vite-plugin-pwa`: manifest, service worker con la sola shell, `/api` sempre in rete; voce "Installa l'app" nel menu
-  - [x] Icona panna e ambra su grafite (prima `gauge`, ora `notebook-pen`) (`npm run icone`), sfondo doodle strada e officina (`npm run sfondo`)
+  - [x] Icona panna e ambra su grafite (prima `gauge`, ora `notebook-pen`) (`npm run icone`), sfondo doodle (prima strada e officina, ora a tema diario) (`npm run sfondo`)
   - [x] HTTPS opzionale: `npm run certificati` con mkcert, usato da Vite se il certificato c'è ([05](05-esecuzione.md#https-per-la-pwa))
   - [ ] mkcert installato sul Mac e radice resa attendibile sul telefono
   - [ ] Prova da telefono: installazione, una riga col Wi‑Fi spento che arriva quando torna

@@ -12,7 +12,7 @@ Serve **Node 24** (`node:sqlite`). Nessuna variabile d'ambiente, nessun servizio
 | `npm run build` | controllo dei tipi e build |
 | `npm run certificati` | crea il certificato HTTPS per la rete di casa (serve mkcert) |
 | `npm run icone` | rigenera le icone della PWA da `public/icona.svg` |
-| `npm run sfondo` | rigenera lo sfondo doodle `src/ui/sfondo-officina.svg` |
+| `npm run sfondo` | rigenera lo sfondo doodle `src/ui/sfondo-diario.svg` |
 | `npm run storico` | scrive un mese di righe inventate per C3 e Guzzi Breva ([dati di prova](#dati-di-prova)) |
 
 - **Dal telefono**: stessa rete Wi‑Fi del Mac, indirizzo `http://<IP del Mac>:<porta>/`, stampato da Vite alla voce *Network*. Conviene dare al Mac un IP fisso sul router, così il segnalibro sul telefono non cambia.
