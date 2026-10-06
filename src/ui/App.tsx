@@ -1,9 +1,10 @@
 import { useCallback, useState } from 'react'
 import { Gauge, Menu } from 'lucide-react'
-import { archivio } from '../dati'
 import { MenuLaterale } from './MenuLaterale'
+import { Diario } from './Diario'
 import { Registra } from './Registra'
 import { useRotta } from './rotta'
+import { useVoci } from './useVoci'
 
 /**
  * Il guscio dell'app, come le altre app di casa (docs/09-interfaccia.md):
@@ -14,6 +15,8 @@ export function App() {
   const rotta = useRotta()
   const [menuAperto, setMenuAperto] = useState(false)
   const chiudiMenu = useCallback(() => setMenuAperto(false), [])
+  const { stato, ricarica, mostraAltre, altreInCaricamento, salva, elimina } = useVoci()
+  const voci = stato.fase === 'pronto' ? stato.voci : []
 
   return (
     <div className="flex min-h-dvh flex-col lg:grid lg:grid-cols-[256px_minmax(0,1fr)] lg:grid-rows-[auto_1fr]">
@@ -33,8 +36,26 @@ export function App() {
       </header>
       <MenuLaterale aperto={menuAperto} corrente={rotta} onChiudi={chiudiMenu} />
       <main className="mx-auto w-full max-w-[640px] flex-1 p-3 pb-[calc(12px+env(safe-area-inset-bottom))] lg:col-start-2">
-        {rotta === 'registra' && <Registra onSalva={(voce) => archivio.salva(voce)} />}
-        {rotta === 'diario' && <p className="mt-8 text-center text-testo-tenue">Diario</p>}
+        {/* Registra si apre subito anche mentre le righe arrivano: servono solo ai suggerimenti. */}
+        {rotta === 'registra' && <Registra voci={voci} onSalva={salva} />}
+        {rotta === 'diario' && stato.fase === 'caricamento' && <p className="mt-8 text-center text-testo-tenue">Carico…</p>}
+        {rotta === 'diario' && stato.fase === 'errore' && (
+          <p className="mt-8 px-3 text-center text-testo-tenue" role="alert">
+            {stato.messaggio}{' '}
+            <button type="button" className="font-semibold text-grafite underline" onClick={() => void ricarica()}>
+              Riprova
+            </button>
+          </p>
+        )}
+        {rotta === 'diario' && stato.fase === 'pronto' && (
+          <Diario
+            voci={stato.voci}
+            finite={stato.finite}
+            altreInCaricamento={altreInCaricamento}
+            onMostraAltre={mostraAltre}
+            onElimina={elimina}
+          />
+        )}
       </main>
     </div>
   )

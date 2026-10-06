@@ -1,11 +1,42 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Check } from 'lucide-react'
+import { chiaviUsate, confrontabile, soggettiUsati } from '../dominio/suggerimenti'
 import { LIMITI, nuovaVoce, type Voce } from '../dominio/voce'
 import { leggiUltimoSoggetto, salvaUltimoSoggetto } from './preferenze'
 
 interface Props {
+  /** Le righe già lette: da qui vengono i suggerimenti. */
+  voci: readonly Voce[]
   /** Salva la riga; se va male lancia un errore con un messaggio da mostrare. */
   onSalva: (voce: Voce) => Promise<void>
+}
+
+/**
+ * I suggerimenti come pulsanti sotto un campo: un tocco scrive il testo nel
+ * campo. Quello uguale al testo già scritto è segnato.
+ */
+function Suggerimenti({ etichetta, testi, attuale, onScegli }: {
+  etichetta: string
+  testi: readonly string[]
+  attuale: string
+  onScegli: (testo: string) => void
+}) {
+  if (testi.length === 0) return null
+  return (
+    <div className="flex flex-wrap gap-1.5" role="group" aria-label={etichetta}>
+      {testi.map((testo) => (
+        <button
+          key={testo}
+          type="button"
+          aria-pressed={confrontabile(testo) === confrontabile(attuale)}
+          onClick={() => onScegli(testo)}
+          className="min-h-9 max-w-full truncate rounded-full border border-bordo bg-white px-3 text-sm hover:border-grafite active:bg-fumo aria-pressed:border-grafite aria-pressed:bg-grafite aria-pressed:text-panna"
+        >
+          {testo}
+        </button>
+      ))}
+    </div>
+  )
 }
 
 const CAMPO =
@@ -16,7 +47,7 @@ const CAMPO =
  * valore facoltativo e Salva. Il soggetto resta e si ricorda; chiave e valore
  * si svuotano dopo ogni riga, e il fuoco torna sulla chiave per la prossima.
  */
-export function Registra({ onSalva }: Props) {
+export function Registra({ voci, onSalva }: Props) {
   const [soggetto, setSoggetto] = useState(leggiUltimoSoggetto)
   const [chiave, setChiave] = useState('')
   const [valore, setValore] = useState('')
@@ -26,6 +57,7 @@ export function Registra({ onSalva }: Props) {
   const [salvata, setSalvata] = useState<Voce | null>(null)
   const campoChiave = useRef<HTMLInputElement>(null)
   const campoSoggetto = useRef<HTMLInputElement>(null)
+  const campoValore = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     // Col soggetto già scelto si parte dalla chiave.
@@ -66,38 +98,61 @@ export function Registra({ onSalva }: Props) {
 
   return (
     <form className="animate-entra flex flex-col gap-4 pt-2" onSubmit={(e) => void salva(e)} noValidate>
-      <label className="flex flex-col gap-1.5">
-        <span className="font-semibold">Soggetto</span>
-        <input
-          ref={campoSoggetto}
-          className={CAMPO}
-          value={soggetto}
-          onChange={(e) => setSoggetto(e.target.value)}
-          placeholder="moto, auto…"
-          maxLength={LIMITI.soggetto}
-          autoCapitalize="none"
-          autoComplete="off"
-          enterKeyHint="next"
+      <div className="flex flex-col gap-2">
+        <label className="flex flex-col gap-1.5">
+          <span className="font-semibold">Soggetto</span>
+          <input
+            ref={campoSoggetto}
+            className={CAMPO}
+            value={soggetto}
+            onChange={(e) => setSoggetto(e.target.value)}
+            placeholder="moto, auto…"
+            maxLength={LIMITI.soggetto}
+            autoCapitalize="none"
+            autoComplete="off"
+            enterKeyHint="next"
+          />
+        </label>
+        <Suggerimenti
+          etichetta="Soggetti già usati"
+          testi={soggettiUsati(voci)}
+          attuale={soggetto}
+          onScegli={(testo) => {
+            setSoggetto(testo)
+            campoChiave.current?.focus()
+          }}
         />
-      </label>
-      <label className="flex flex-col gap-1.5">
-        <span className="font-semibold">Chiave</span>
-        <input
-          ref={campoChiave}
-          className={CAMPO}
-          value={chiave}
-          onChange={(e) => setChiave(e.target.value)}
-          placeholder="km, Benzina, Controllo olio…"
-          maxLength={LIMITI.chiave}
-          autoComplete="off"
-          enterKeyHint="next"
+      </div>
+      <div className="flex flex-col gap-2">
+        <label className="flex flex-col gap-1.5">
+          <span className="font-semibold">Chiave</span>
+          <input
+            ref={campoChiave}
+            className={CAMPO}
+            value={chiave}
+            onChange={(e) => setChiave(e.target.value)}
+            placeholder="km, Benzina, Controllo olio…"
+            maxLength={LIMITI.chiave}
+            autoComplete="off"
+            enterKeyHint="next"
+          />
+        </label>
+        <Suggerimenti
+          etichetta="Chiavi già usate"
+          testi={chiaviUsate(voci, soggetto)}
+          attuale={chiave}
+          onScegli={(testo) => {
+            setChiave(testo)
+            campoValore.current?.focus()
+          }}
         />
-      </label>
+      </div>
       <label className="flex flex-col gap-1.5">
         <span>
           <span className="font-semibold">Valore</span> <span className="text-testo-tenue">· facoltativo</span>
         </span>
         <input
+          ref={campoValore}
           className={CAMPO}
           value={valore}
           onChange={(e) => setValore(e.target.value)}

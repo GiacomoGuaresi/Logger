@@ -5,8 +5,8 @@
 import { mkdirSync } from 'node:fs'
 import { dirname } from 'node:path'
 import { DatabaseSync } from 'node:sqlite'
-import type { Archivio, OpzioniLettura } from '../src/dati/archivio'
-import type { Voce } from '../src/dominio/voce'
+import type { Archivio, OpzioniLettura } from '../src/dati/archivio.ts'
+import type { Voce } from '../src/dominio/voce.ts'
 
 const SCHEMA = `
 create table if not exists voci (

@@ -5,9 +5,9 @@
 import type { IncomingMessage, ServerResponse } from 'node:http'
 import { resolve } from 'node:path'
 import type { Plugin } from 'vite'
-import type { Archivio } from '../src/dati/archivio'
-import { ArchivioSqlite } from './archivioSqlite'
-import { gestisci } from './rotte'
+import type { Archivio } from '../src/dati/archivio.ts'
+import { ArchivioSqlite } from './archivioSqlite.ts'
+import { gestisci } from './rotte.ts'
 
 /** Il corpo di una richiesta: al massimo 16 KB, una riga ne usa poche centinaia. */
 const CORPO_MASSIMO = 16 * 1024

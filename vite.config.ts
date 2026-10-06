@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
-import { pluginApi } from './server/pluginApi'
+import { pluginApi } from './server/pluginApi.ts'
 
 // Prova in locale (docs/05-esecuzione.md): `npm run dev` e `npm run prova`
 // ascoltano su tutta la rete di casa (`--host`), così l'app si apre anche dal

@@ -3,8 +3,8 @@
 // e corpo. Così i test la chiamano direttamente, e il plugin di Vite fa solo da
 // tramite.
 
-import type { Archivio } from '../src/dati/archivio'
-import { validaVoce } from '../src/dominio/voce'
+import type { Archivio } from '../src/dati/archivio.ts'
+import { validaVoce } from '../src/dominio/voce.ts'
 
 export interface Richiesta {
   metodo: string
