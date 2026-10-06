@@ -1,21 +1,13 @@
-// Il diario raggruppato per giorno (docs/02-funzionalita.md#diario): "Oggi",
-// "Ieri", poi "lunedì 5 ottobre", con l'anno solo se non è quello corrente.
+// Le date del diario (docs/02-funzionalita.md#diario): le giornate della
+// timeline e, per le card, quando è stata scritta l'ultima riga.
 
 import type { Voce } from './voce'
-
-export interface Giorno {
-  /** `AAAA-MM-GG` nel fuso orario di chi guarda. */
-  chiave: string
-  titolo: string
-  voci: Voce[]
-}
 
 /** `fuso` serve ai test; nell'app è quello del dispositivo. */
 function formati(fuso?: string) {
   return {
     giorno: new Intl.DateTimeFormat('en-CA', { timeZone: fuso, year: 'numeric', month: '2-digit', day: '2-digit' }),
-    titolo: new Intl.DateTimeFormat('it-IT', { timeZone: fuso, weekday: 'long', day: 'numeric', month: 'long' }),
-    titoloConAnno: new Intl.DateTimeFormat('it-IT', { timeZone: fuso, weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }),
+    data: new Intl.DateTimeFormat('it-IT', { timeZone: fuso, day: '2-digit', month: '2-digit', year: 'numeric' }),
     ora: new Intl.DateTimeFormat('it-IT', { timeZone: fuso, hour: '2-digit', minute: '2-digit' }),
   }
 }
@@ -27,30 +19,27 @@ function giornoPrima(giorno: string): string {
   return d.toISOString().slice(0, 10)
 }
 
-/** Le righe, già dalla più recente, divise per giorno nell'ordine in cui arrivano. */
-export function perGiorno(voci: readonly Voce[], adesso: Date = new Date(), fuso?: string): Giorno[] {
-  const f = formati(fuso)
-  const oggi = f.giorno.format(adesso)
-  const ieri = giornoPrima(oggi)
-  const giorni: Giorno[] = []
+/** La data di una riga, "02/10/2026", nel fuso di chi guarda. */
+export function data(voce: Voce, fuso?: string): string {
+  return formati(fuso).data.format(new Date(voce.quando))
+}
 
+/** Una tappa della timeline: le righe di una stessa giornata. */
+export interface Giornata {
+  data: string
+  voci: Voce[]
+}
+
+/** Le righe, già dalla più recente, divise per giornata nell'ordine in cui arrivano. */
+export function perGiornata(voci: readonly Voce[], fuso?: string): Giornata[] {
+  const giornate: Giornata[] = []
   for (const voce of voci) {
-    const quando = new Date(voce.quando)
-    const chiave = f.giorno.format(quando)
-    let giorno = giorni.at(-1)
-    if (giorno?.chiave !== chiave) {
-      const titolo =
-        chiave === oggi
-          ? 'Oggi'
-          : chiave === ieri
-            ? 'Ieri'
-            : (chiave.slice(0, 4) === oggi.slice(0, 4) ? f.titolo : f.titoloConAnno).format(quando)
-      giorno = { chiave, titolo, voci: [] }
-      giorni.push(giorno)
-    }
-    giorno.voci.push(voce)
+    const d = data(voce, fuso)
+    const ultima = giornate.at(-1)
+    if (ultima?.data === d) ultima.voci.push(voce)
+    else giornate.push({ data: d, voci: [voce] })
   }
-  return giorni
+  return giornate
 }
 
 /** L'ora di una riga, "08:12". */

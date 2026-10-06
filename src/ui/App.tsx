@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
-import { CloudOff, CloudUpload, Gauge, Menu } from 'lucide-react'
+import { CloudOff, CloudUpload, Menu, NotebookPen } from 'lucide-react'
 import { trovaSoggetto } from '../dominio/soggetti'
+import { chiaviConVolte } from '../dominio/suggerimenti'
 import { Diari } from './Diari'
 import { Diario } from './Diario'
 import { Installa } from './Installa'
@@ -25,14 +26,15 @@ export function App() {
   const statoInstallazione = useInstallazione()
 
   // Il diario si apre (e si legge) quando l'indirizzo ne nomina uno.
+  const soggettoDiario = rotta.pagina === 'diario' ? rotta.soggetto : undefined
   useEffect(() => {
-    if (rotta.soggetto) void apriDiario(rotta.soggetto)
+    if (soggettoDiario) void apriDiario(soggettoDiario)
     else chiudiDiario()
-  }, [rotta.soggetto, apriDiario, chiudiDiario])
+  }, [soggettoDiario, apriDiario, chiudiDiario])
 
   const elenco = soggetti.fase === 'pronto' ? soggetti.elenco : []
   /** Il titolo del diario: la forma scritta più spesso, se il soggetto c'è già. */
-  const titolo = rotta.soggetto ? (trovaSoggetto(elenco, rotta.soggetto)?.nome ?? rotta.soggetto) : ''
+  const titolo = soggettoDiario ? (trovaSoggetto(elenco, soggettoDiario)?.nome ?? soggettoDiario) : ''
 
   return (
     <div className="sfondo-officina flex min-h-dvh flex-col lg:grid lg:grid-cols-[256px_minmax(0,1fr)] lg:grid-rows-[auto_1fr]">
@@ -47,7 +49,7 @@ export function App() {
         >
           <Menu className="size-[22px]" aria-hidden="true" />
         </button>
-        <Gauge className="size-[22px] shrink-0 text-ambra" aria-hidden="true" />
+        <NotebookPen className="size-[22px] shrink-0 text-ambra" aria-hidden="true" />
         <h1 className="ml-1 text-lg font-semibold tracking-[0.01em]">Logger</h1>
         {inAttesa.size > 0 && (
           <span
@@ -91,7 +93,9 @@ export function App() {
         )}
         {rotta.pagina === 'installa' && <Installa stato={statoInstallazione} />}
         {/* Registra si apre subito anche mentre le righe arrivano: le scelte vengono dalla memoria del dispositivo. */}
-        {rotta.pagina === 'registra' && <Registra usi={usi} inAttesa={inAttesa} onSalva={salva} />}
+        {rotta.pagina === 'registra' && (
+          <Registra key={rotta.soggetto ?? ''} soggettoIniziale={rotta.soggetto ?? ''} usi={usi} inAttesa={inAttesa} onSalva={salva} />
+        )}
         {rotta.pagina === 'diario' && !rotta.soggetto && soggetti.fase === 'caricamento' && (
           <p className="mt-8 text-center text-testo-tenue">Carico…</p>
         )}
@@ -106,7 +110,10 @@ export function App() {
         {rotta.pagina === 'diario' && !rotta.soggetto && soggetti.fase === 'pronto' && <Diari soggetti={soggetti.elenco} />}
         {rotta.pagina === 'diario' && rotta.soggetto && diario && (
           <Diario
+            // Un altro diario riparte senza filtro.
+            key={rotta.soggetto}
             soggetto={titolo}
+            chiavi={chiaviConVolte(usi, rotta.soggetto)}
             stato={diario.stato}
             inAttesa={inAttesa}
             onMostraAltre={mostraAltre}

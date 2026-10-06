@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { indirizzoDiario, leggiRotta } from './rotta'
+import { indirizzoDiario, indirizzoRegistra, leggiRotta } from './rotta'
 
 describe('leggiRotta', () => {
   it('riconosce le pagine e il soggetto del diario', () => {
@@ -9,6 +9,14 @@ describe('leggiRotta', () => {
     expect(leggiRotta('#/diario/')).toEqual({ pagina: 'diario' })
     expect(leggiRotta('#/installa')).toEqual({ pagina: 'installa' })
     expect(leggiRotta('#/altro')).toEqual({ pagina: 'registra' })
+    expect(leggiRotta('#/altro/moto')).toEqual({ pagina: 'registra' })
+    expect(leggiRotta('#/registra')).toEqual({ pagina: 'registra' })
+  })
+
+  it('Registra può partire da un soggetto', () => {
+    for (const soggetto of ['moto', 'Guzzi Breva', 'A/B']) {
+      expect(leggiRotta(indirizzoRegistra(soggetto))).toEqual({ pagina: 'registra', soggetto })
+    }
   })
 
   it('il soggetto fa andata e ritorno, anche con spazi, accenti e barre', () => {

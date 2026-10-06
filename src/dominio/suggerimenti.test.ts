@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { chiaviUsate, confrontabile, conVoce, filtra, soggettiUsati, ultimoValore, type Uso } from './suggerimenti'
+import { chiaviConVolte, chiaviUsate, confrontabile, conVoce, filtra, soggettiUsati, ultimoValore, type Uso } from './suggerimenti'
 import type { Voce } from './voce'
 
 function uso(soggetto: string, chiave: string, volte: number, ultimaVolta: string, valore?: string): Uso {
@@ -46,6 +46,15 @@ describe('chiaviUsate', () => {
 
   it('un soggetto nuovo non ha scelte', () => {
     expect(chiaviUsate(usi, 'barca')).toEqual([])
+  })
+})
+
+describe('chiaviConVolte', () => {
+  it('le chiavi del soggetto con quante righe, sommando le forme scritte', () => {
+    expect(chiaviConVolte(usi, 'MOTO')).toEqual([
+      { testo: 'km', volte: 6 },
+      { testo: 'Benzina', volte: 2 },
+    ])
   })
 })
 

@@ -21,7 +21,7 @@ Le altre app sono terracotta (Grocery), verde (Projects) e blu (Trekking): Logge
 
 ## Icona
 
-Disegno Lucide **`gauge`** (contachilometri) panna su grafite `#3f444e`, in `public/icona.svg`, da cui `npm run icone` genera le icone della PWA.
+Disegno Lucide **`notebook-pen`** (quaderno con la penna): quaderno panna e penna ambra su grafite `#3f444e`, generico come lo scopo dell'app, loggare qualunque cosa; in `public/icona.svg`, da cui `npm run icone` genera le icone della PWA.
 
 ## Sfondo
 
@@ -31,7 +31,7 @@ Disegno Lucide **`gauge`** (contachilometri) panna su grafite `#3f444e`, in `pub
 
 | Schermata | Contenuto |
 |---|---|
-| **Registra** (`#/`, pagina principale) | tre campi uno sotto l'altro: **Soggetto** e **Chiave** sono select con ricerca (elenco a tendina sotto il campo, voce scelta col segno ✓, "Nuovo … «testo»" in fondo), **Valore** è libero con l'ultimo valore come segnaposto; **Salva** grande in basso |
+| **Registra** (`#/`, pagina principale; `#/registra/<soggetto>` dal "+ Riga" del diario) | a passi, ognuno con una breve entrata: prima solo **Soggetto**, poi **Chiave**, poi **Valore** con Salva; il passo fatto resta come pillola grafite con ✓ e matita, accanto all'etichetta in grigio. **Soggetto** e **Chiave** sono pulsanti a pillola alti 44px che vanno a capo (scelto: grafite pieno col segno ✓ ambra; chiave con l'ultimo valore in piccolo; "+ Nuovo" tratteggiato in fondo, che apre un campo di ricerca); sotto, **Valore** con l'unità in fondo al campo e, sulla stessa riga, **Salva**; sopra il campo "abc/123" per la tastiera e il pulsante ↺ con l'ultimo valore |
 | **Diari** (`#/diario`) | "Scegli il diario": una card bianca per soggetto con nome, ultima volta, numero di righe e le chiavi più usate col loro ultimo valore; freccia a destra |
-| **Diario di un soggetto** (`#/diario/<soggetto>`) | in cima ‹ Diari, il nome del soggetto e + Riga; righe raggruppate per giorno, ognuna con ora, chiave in evidenza, valore a destra; cestino con conferma; "Mostra altre" in fondo |
+| **Diario di un soggetto** (`#/diario/<soggetto>`) | in cima ‹ Diari, il nome del soggetto e + Riga; sotto, la tendina nativa del filtro per chiave, larga quanto la pagina (attiva: grafite pieno, con × accanto); timeline verticale: linea grigia a sinistra con un pallino per giornata (ambra il più recente, grafite gli altri), accanto una card bianca con la data gg/mm/aaaa in piccolo e le righe del giorno separate da un filo, ognuna con la chiave in evidenza, il valore a destra e il cestino tenue con conferma; "Mostra altre" in fondo |
 | **Accesso** | dalla Fase 2: solo passphrase, come le altre app |

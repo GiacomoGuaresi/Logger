@@ -49,6 +49,11 @@ export function conVoce(usi: readonly Uso[], voce: Voce): Uso[] {
  * a parità, dal più recente. Di ogni gruppo dà la forma scritta più spesso.
  */
 function piuUsati(usi: readonly Uso[], testoDi: (u: Uso) => string): string[] {
+  return conVolte(usi, testoDi).map(({ testo }) => testo)
+}
+
+/** Come `piuUsati`, con quante righe ha ogni gruppo. */
+function conVolte(usi: readonly Uso[], testoDi: (u: Uso) => string): { testo: string; volte: number }[] {
   const gruppi = new Map<string, { volte: number; ultimaVolta: string; forme: Map<string, number> }>()
   for (const uso of usi) {
     const testo = testoDi(uso)
@@ -61,7 +66,7 @@ function piuUsati(usi: readonly Uso[], testoDi: (u: Uso) => string): string[] {
   }
   return [...gruppi.values()]
     .sort((a, b) => b.volte - a.volte || b.ultimaVolta.localeCompare(a.ultimaVolta))
-    .map(({ forme }) => [...forme].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0][0])
+    .map(({ forme, volte }) => ({ testo: [...forme].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0][0], volte }))
 }
 
 export function soggettiUsati(usi: readonly Uso[]): string[] {
@@ -70,8 +75,13 @@ export function soggettiUsati(usi: readonly Uso[]): string[] {
 
 /** Le chiavi usate con `soggetto`; se il soggetto è vuoto, quelle di tutti. */
 export function chiaviUsate(usi: readonly Uso[], soggetto: string): string[] {
+  return chiaviConVolte(usi, soggetto).map(({ testo }) => testo)
+}
+
+/** Le chiavi di `soggetto`, dalla più usata, con quante righe ha ciascuna: il filtro del diario. */
+export function chiaviConVolte(usi: readonly Uso[], soggetto: string): { testo: string; volte: number }[] {
   const cercato = confrontabile(soggetto)
-  return piuUsati(
+  return conVolte(
     cercato === '' ? usi : usi.filter((u) => confrontabile(u.soggetto) === cercato),
     (u) => u.chiave,
   )

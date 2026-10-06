@@ -118,7 +118,9 @@ export function MenuLaterale({ aperto, corrente, diari, onChiudi, onInstalla }: 
               <a
                 href={indirizzoDiario(nome)}
                 aria-current={
-                  corrente.soggetto && confrontabile(corrente.soggetto) === confrontabile(nome) ? 'page' : undefined
+                  corrente.pagina === 'diario' && corrente.soggetto && confrontabile(corrente.soggetto) === confrontabile(nome)
+                    ? 'page'
+                    : undefined
                 }
                 onClick={onChiudi}
                 className={VOCE}

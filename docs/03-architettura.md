@@ -62,7 +62,6 @@ Arriva allo step 4 ([06](06-roadmap.md)). Serve quando il telefono perde il Wi�
   - `logger.diari`: le ultime righe lette di ogni diario, per aprirlo subito;
   - `logger.usi`: il riepilogo per le card dei diari e le scelte di Registra;
   - `logger.coda`: le scritture non ancora arrivate all'archivio, dalla più vecchia;
-  - `logger.soggetto`: l'ultimo soggetto usato.
 - Ogni **riga ha l'`id` generato dal browser** (`crypto.randomUUID()`) e la data del momento in cui si scrive: una scrittura in coda è un `salva` o un `elimina` per `id`, quindi **rimandarla due volte non fa danni**, e la data resta quella vera anche se arriva dopo.
 - Il **sincronizzatore** (`src/dati/sincronizzatore.ts`) svuota la coda in ordine quando l'app si apre, torna la rete (`online`), l'app torna in primo piano, si salva una riga o, con righe in attesa, ogni 30 secondi. Si ferma al primo errore di rete e riprova dopo; una scrittura **rifiutata** (dati non validi) si toglie dalla coda e si segnala, per non bloccare le altre.
 - Il service worker della PWA mette in cache solo la **shell** dell'app (step 5, serve HTTPS: [05](05-esecuzione.md#https-per-la-pwa)).
@@ -91,7 +90,7 @@ Come nelle altre app, i test coprono la **logica pura**:
 - rotte dell'API: risposte e codici per richieste valide e non valide;
 - scelte: soggetti e chiavi per soggetto, confronto senza maiuscole e accenti, ordine per uso, forma più usata, filtro della ricerca, ultimo valore della coppia;
 - contratto del riepilogo `usi`: conteggi e ultimo valore non vuoto;
-- raggruppamento del diario per giorno ("Oggi", "Ieri", data);
+- giornate della timeline (gg/mm/aaaa nel fuso di chi guarda) e date delle card ("oggi 08:12");
 - dallo step 4: coda (aggiunta, invio in ordine, stop al primo errore di rete, scarto delle scritture rifiutate) e lettura della memoria locale con dati vecchi o rovinati.
 
 ## Struttura cartelle

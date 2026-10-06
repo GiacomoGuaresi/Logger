@@ -14,8 +14,8 @@ Poi si rilegge tutto nel **diario**, dal più recente. Nient'altro, per ora: le 
 
 ## Cosa fa
 
-- **Registra**: soggetto e chiave si scelgono con una select con ricerca tra quelli già inseriti (o se ne aggiunge uno nuovo), il valore è facoltativo e propone l'ultimo scritto; la data è quella di adesso
-- **Diario**: tutte le righe, dalla più recente, raggruppate per giorno; si può eliminare una riga sbagliata
+- **Registra**: soggetto e chiave si toccano tra quelli già inseriti (o se ne aggiunge uno nuovo), il valore è facoltativo e propone l'ultimo scritto, col tastierino numerico e l'unità già messa se era un numero; la data è quella di adesso
+- **Diario**: un diario per soggetto, come timeline verticale dalla giornata più recente, con le righe dello stesso giorno insieme; si può eliminare una riga sbagliata
 - **Senza rete**: se il telefono perde il Wi‑Fi di casa, quello che si scrive resta in coda e parte quando la rete torna, una volta sola
 - **Installabile** sulla schermata Home, con l'HTTPS locale ([05](docs/05-esecuzione.md#https-per-la-pwa))
 

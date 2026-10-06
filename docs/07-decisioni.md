@@ -23,12 +23,18 @@
 | 2026-10-06 | **Niente pipeline né pubblicazione online** durante la prova; git **solo locale** | deciso |
 | 2026-10-06 | **Niente passphrase** durante la prova: il server è raggiungibile solo dalla rete di casa | deciso |
 | 2026-10-06 | Restano la **coda senza rete** (step 4) e la **PWA** (step 5, con HTTPS locale via mkcert) | deciso |
-| 2026-10-06 | Colore **grafite** con accento **ambra**, icona Lucide `gauge`, sfondo doodle strada e officina | deciso |
+| 2026-10-06 | Colore **grafite** con accento **ambra**, ~~icona Lucide `gauge`~~, sfondo doodle strada e officina | deciso, icona superata il 2026-10-06 |
 | 2026-10-06 | ~~Diario unico con tutti i soggetti~~ | superata il 2026-10-06 |
 | 2026-10-06 | Ogni diario ha la sua **voce nel menu laterale**, in ordine alfabetico (le card restano dalla più recente) | deciso |
 | 2026-10-06 | **Un diario per soggetto**: prima si sceglie il soggetto da una card, poi si vedono solo le sue righe; ogni diario si legge dall'archivio per conto suo | deciso |
 | 2026-10-06 | Senza rete: la riga si **salva subito** a schermo e in coda, senza aspettare il server; la conferma dice "da inviare" finché non arriva | deciso |
-| 2026-10-06 | Soggetto e chiave come **select con ricerca** tra quelli già inseriti, senza valori predefiniti; un valore nuovo si aggiunge dalla stessa select | deciso |
+| 2026-10-06 | ~~Soggetto e chiave come **select con ricerca** tra quelli già inseriti~~ | superata il 2026-10-06 |
 | 2026-10-06 | Le scelte vengono da un **riepilogo di tutte le righe** (`usi`), non dalle ultime 100 lette | deciso |
 | 2026-10-06 | Il segnaposto del valore è **l'ultimo valore non vuoto** di quel soggetto e quella chiave | deciso |
 | 2026-10-06 | HTTPS locale **opzionale**: Vite lo usa se `npm run certificati` ha creato il certificato | deciso |
+| 2026-10-06 | Registra pensata per il telefono: soggetto e chiave come **pulsanti da toccare** (con ricerca e "Nuovo" dietro a un +), la tastiera si apre solo per il valore e non si apre per le chiavi senza valori | deciso |
+| 2026-10-06 | Se l'ultimo valore è un numero, **tastierino numerico** e **unità aggiunta da sola** ("27" → "27€"); "abc" per scrivere testo | deciso |
+| 2026-10-06 | Registra **a passi**: soggetto, poi chiave, poi valore e Salva, uno alla volta; il passo fatto si riduce a una pillola che si tocca per cambiarlo. All'apertura **nessun soggetto scelto** (non si ricorda più l'ultimo); "+ Riga" lo passa nell'indirizzo, `#/registra/<soggetto>` | deciso |
+| 2026-10-06 | Diario come **timeline verticale**: una tappa per giornata, con la data gg/mm/aaaa e sotto le righe di quel giorno | deciso |
+| 2026-10-06 | **Filtro per chiave** nel diario: una **tendina nativa** con tutte le chiavi e il loro conto, una sola attiva, sulle righe già caricate (niente filtro lato server per ora); scartate le chip a scorrimento, che con tante chiavi ne nascondevano una parte | deciso |
+| 2026-10-06 | Icona Lucide **`notebook-pen`** al posto di `gauge`: il tachimetro legava l'app a moto e auto, il quaderno vale per qualunque cosa si registri | deciso |
