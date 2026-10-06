@@ -1,69 +1,47 @@
-import { useCallback, useEffect, useState } from 'react'
-import { archivio } from '../dati'
-import type { Voce } from '../dominio/voce'
+import { useEffect, useSyncExternalStore } from 'react'
+import { sincronizzatore } from '../dati'
 
-/** Quante righe si leggono per volta: "Mostra altre" ne carica altrettante. */
-export const PAGINA = 100
+/** Con scritture in attesa si riprova ogni tanto, anche se nessuno tocca niente. */
+const RIPROVA_MS = 30_000
 
-export type StatoVoci =
-  | { fase: 'caricamento' }
-  | { fase: 'errore'; messaggio: string }
-  /** `finite`: l'ultima pagina è arrivata incompleta, prima non c'è altro. */
-  | { fase: 'pronto'; voci: Voce[]; finite: boolean }
-
-/** Inserisce o sostituisce `voce` tenendo l'ordine dalla più recente. */
-function conVoce(voci: readonly Voce[], voce: Voce): Voce[] {
-  return [...voci.filter((v) => v.id !== voce.id), voce].sort(
-    (a, b) => b.quando.localeCompare(a.quando) || b.id.localeCompare(a.id),
-  )
-}
+const iscriviti = (avvisa: () => void) => sincronizzatore.iscriviti(avvisa)
+const leggi = () => sincronizzatore.leggi()
 
 /**
- * Le righe del diario, condivise tra Registra (per i suggerimenti) e Diario.
- * Dopo un salvataggio o un'eliminazione l'elenco si aggiorna senza rileggere.
+ * Le righe del diario, condivise tra Registra (per i suggerimenti) e Diario
+ * (docs/03-architettura.md#senza-rete). All'apertura si vedono subito quelle in
+ * memoria; si rilegge l'archivio, e si manda la coda, quando l'app si apre,
+ * torna la rete o torna in primo piano.
  */
 export function useVoci() {
-  const [stato, setStato] = useState<StatoVoci>({ fase: 'caricamento' })
-  const [altreInCaricamento, setAltreInCaricamento] = useState(false)
+  const istantanea = useSyncExternalStore(iscriviti, leggi)
+  const quanteInAttesa = istantanea.inAttesa.size
 
-  const ricarica = useCallback(async () => {
-    setStato({ fase: 'caricamento' })
-    try {
-      const voci = await archivio.leggi({ limite: PAGINA })
-      setStato({ fase: 'pronto', voci, finite: voci.length < PAGINA })
-    } catch (e) {
-      setStato({ fase: 'errore', messaggio: (e as Error).message })
+  useEffect(() => {
+    const aggiorna = () => void sincronizzatore.aggiorna()
+    const inPrimoPiano = () => {
+      if (document.visibilityState === 'visible') aggiorna()
+    }
+    aggiorna()
+    window.addEventListener('online', aggiorna)
+    document.addEventListener('visibilitychange', inPrimoPiano)
+    return () => {
+      window.removeEventListener('online', aggiorna)
+      document.removeEventListener('visibilitychange', inPrimoPiano)
     }
   }, [])
 
   useEffect(() => {
-    void ricarica()
-  }, [ricarica])
+    if (quanteInAttesa === 0) return
+    const ogni = setInterval(() => void sincronizzatore.aggiorna(), RIPROVA_MS)
+    return () => clearInterval(ogni)
+  }, [quanteInAttesa])
 
-  const mostraAltre = async () => {
-    if (stato.fase !== 'pronto' || stato.finite || altreInCaricamento) return
-    setAltreInCaricamento(true)
-    try {
-      const altre = await archivio.leggi({ limite: PAGINA, prima: stato.voci.at(-1)?.quando })
-      setStato((prima) =>
-        prima.fase === 'pronto'
-          ? { fase: 'pronto', voci: altre.reduce(conVoce, prima.voci), finite: altre.length < PAGINA }
-          : prima,
-      )
-    } finally {
-      setAltreInCaricamento(false)
-    }
+  return {
+    ...istantanea,
+    ricarica: () => sincronizzatore.aggiorna(),
+    mostraAltre: () => sincronizzatore.mostraAltre(),
+    salva: (voce: Parameters<typeof sincronizzatore.salva>[0]) => sincronizzatore.salva(voce),
+    elimina: (id: string) => sincronizzatore.elimina(id),
   }
-
-  const salva = async (voce: Voce) => {
-    await archivio.salva(voce)
-    setStato((prima) => (prima.fase === 'pronto' ? { ...prima, voci: conVoce(prima.voci, voce) } : prima))
-  }
-
-  const elimina = async (id: string) => {
-    await archivio.elimina(id)
-    setStato((prima) => (prima.fase === 'pronto' ? { ...prima, voci: prima.voci.filter((v) => v.id !== id) } : prima))
-  }
-
-  return { stato, ricarica, mostraAltre, altreInCaricamento, salva, elimina }
 }

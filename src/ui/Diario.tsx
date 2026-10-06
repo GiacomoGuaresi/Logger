@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { PenLine, Trash2 } from 'lucide-react'
+import { CloudUpload, PenLine, Trash2 } from 'lucide-react'
 import { ora, perGiorno } from '../dominio/diario'
 import type { Voce } from '../dominio/voce'
 import { Conferma } from './Conferma'
@@ -8,9 +8,11 @@ import { indirizzi } from './rotta'
 interface Props {
   voci: readonly Voce[]
   finite: boolean
-  altreInCaricamento: boolean
+  /** Le righe con una scrittura non ancora arrivata al Mac: hanno il segno "da inviare". */
+  inAttesa: ReadonlySet<string>
   onMostraAltre: () => Promise<void>
-  onElimina: (id: string) => Promise<void>
+  /** Va subito a schermo; se manca la rete parte dopo, da sola. */
+  onElimina: (id: string) => void
 }
 
 function descrivi(voce: Voce): string {
@@ -20,11 +22,11 @@ function descrivi(voce: Voce): string {
 /**
  * Tutte le righe dalla più recente, raggruppate per giorno
  * (docs/02-funzionalita.md#diario). Il cestino, dietro una conferma, serve per
- * gli errori di battitura.
+ * gli errori di battitura. Anche senza rete: l'eliminazione parte quando torna.
  */
-export function Diario({ voci, finite, altreInCaricamento, onMostraAltre, onElimina }: Props) {
+export function Diario({ voci, finite, inAttesa, onMostraAltre, onElimina }: Props) {
   const [daEliminare, setDaEliminare] = useState<Voce | null>(null)
-  const [errore, setErrore] = useState<string | null>(null)
+  const [altreInCaricamento, setAltreInCaricamento] = useState(false)
   const [erroreAltre, setErroreAltre] = useState<string | null>(null)
 
   if (voci.length === 0) {
@@ -42,28 +44,21 @@ export function Diario({ voci, finite, altreInCaricamento, onMostraAltre, onElim
     )
   }
 
-  const chiudi = () => {
-    setDaEliminare(null)
-    setErrore(null)
-  }
-
-  const conferma = async () => {
+  const conferma = () => {
     if (!daEliminare) return
-    setErrore(null)
-    try {
-      await onElimina(daEliminare.id)
-      setDaEliminare(null)
-    } catch (e) {
-      setErrore((e as Error).message)
-    }
+    onElimina(daEliminare.id)
+    setDaEliminare(null)
   }
 
   const altre = async () => {
     setErroreAltre(null)
+    setAltreInCaricamento(true)
     try {
       await onMostraAltre()
     } catch (e) {
       setErroreAltre((e as Error).message)
+    } finally {
+      setAltreInCaricamento(false)
     }
   }
 
@@ -83,6 +78,9 @@ export function Diario({ voci, finite, altreInCaricamento, onMostraAltre, onElim
                   <span className="font-semibold break-words">{voce.chiave}</span>
                   {voce.valore !== null && <span className="ml-auto break-words tabular-nums">{voce.valore}</span>}
                 </div>
+                {inAttesa.has(voce.id) && (
+                  <CloudUpload className="size-4 shrink-0 text-ambra-scura" aria-label="Da inviare" role="img" />
+                )}
                 <button
                   type="button"
                   className="grid size-10 shrink-0 place-items-center rounded-[11px] text-testo-tenue hover:bg-fondo hover:text-pericolo"
@@ -112,15 +110,10 @@ export function Diario({ voci, finite, altreInCaricamento, onMostraAltre, onElim
         </p>
       )}
       {daEliminare && (
-        <Conferma titolo="Elimina riga" conferma="Elimina" pericolo onConferma={() => void conferma()} onAnnulla={chiudi}>
+        <Conferma titolo="Elimina riga" conferma="Elimina" pericolo onConferma={conferma} onAnnulla={() => setDaEliminare(null)}>
           <p className="m-0">
             Elimino <strong>{descrivi(daEliminare)}</strong>? Non si torna indietro.
           </p>
-          {errore && (
-            <p className="mt-2 mb-0 text-xs text-pericolo" role="alert">
-              {errore}
-            </p>
-          )}
         </Conferma>
       )}
     </div>

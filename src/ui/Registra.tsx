@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
-import { Check } from 'lucide-react'
+import { Check, CloudUpload } from 'lucide-react'
 import { chiaviUsate, confrontabile, soggettiUsati } from '../dominio/suggerimenti'
 import { LIMITI, nuovaVoce, type Voce } from '../dominio/voce'
 import { leggiUltimoSoggetto, salvaUltimoSoggetto } from './preferenze'
@@ -7,8 +7,10 @@ import { leggiUltimoSoggetto, salvaUltimoSoggetto } from './preferenze'
 interface Props {
   /** Le righe già lette: da qui vengono i suggerimenti. */
   voci: readonly Voce[]
-  /** Salva la riga; se va male lancia un errore con un messaggio da mostrare. */
-  onSalva: (voce: Voce) => Promise<void>
+  /** Le righe non ancora arrivate al Mac: la conferma dice "da inviare" finché non partono. */
+  inAttesa: ReadonlySet<string>
+  /** Va subito a schermo e in coda; se manca la rete parte dopo, da sola. */
+  onSalva: (voce: Voce) => void
 }
 
 /**
@@ -47,12 +49,11 @@ const CAMPO =
  * valore facoltativo e Salva. Il soggetto resta e si ricorda; chiave e valore
  * si svuotano dopo ogni riga, e il fuoco torna sulla chiave per la prossima.
  */
-export function Registra({ voci, onSalva }: Props) {
+export function Registra({ voci, inAttesa, onSalva }: Props) {
   const [soggetto, setSoggetto] = useState(leggiUltimoSoggetto)
   const [chiave, setChiave] = useState('')
   const [valore, setValore] = useState('')
   const [errore, setErrore] = useState<string | null>(null)
-  const [salvando, setSalvando] = useState(false)
   /** La conferma breve dopo il salvataggio: cambia a ogni riga, così si riavvia. */
   const [salvata, setSalvata] = useState<Voce | null>(null)
   const campoChiave = useRef<HTMLInputElement>(null)
@@ -71,33 +72,25 @@ export function Registra({ voci, onSalva }: Props) {
     return () => clearTimeout(via)
   }, [salvata])
 
-  const salva = async (evento: FormEvent) => {
+  const salva = (evento: FormEvent) => {
     evento.preventDefault()
-    if (salvando) return
     setErrore(null)
     const esito = nuovaVoce({ soggetto, chiave, valore })
     if (!esito.ok) {
       setErrore(esito.errore)
       return
     }
-    setSalvando(true)
-    try {
-      await onSalva(esito.voce)
-      salvaUltimoSoggetto(esito.voce.soggetto)
-      setSoggetto(esito.voce.soggetto)
-      setChiave('')
-      setValore('')
-      setSalvata(esito.voce)
-      campoChiave.current?.focus()
-    } catch (e) {
-      setErrore((e as Error).message)
-    } finally {
-      setSalvando(false)
-    }
+    onSalva(esito.voce)
+    salvaUltimoSoggetto(esito.voce.soggetto)
+    setSoggetto(esito.voce.soggetto)
+    setChiave('')
+    setValore('')
+    setSalvata(esito.voce)
+    campoChiave.current?.focus()
   }
 
   return (
-    <form className="animate-entra flex flex-col gap-4 pt-2" onSubmit={(e) => void salva(e)} noValidate>
+    <form className="animate-entra flex flex-col gap-4 pt-2" onSubmit={salva} noValidate>
       <div className="flex flex-col gap-2">
         <label className="flex flex-col gap-1.5">
           <span className="font-semibold">Soggetto</span>
@@ -169,16 +162,19 @@ export function Registra({ voci, onSalva }: Props) {
       )}
       <button
         type="submit"
-        disabled={salvando}
-        className="min-h-12 rounded-[11px] bg-grafite px-4 text-base font-semibold text-panna hover:bg-grafite-scura active:bg-grafite-scura disabled:opacity-60"
+        className="min-h-12 rounded-[11px] bg-grafite px-4 text-base font-semibold text-panna hover:bg-grafite-scura active:bg-grafite-scura "
       >
-        {salvando ? 'Salvo…' : 'Salva'}
+        Salva
       </button>
       <p className="m-0 min-h-5 text-center text-sm" role="status">
         {salvata && (
           <span key={salvata.id} className="animate-entra inline-flex items-center gap-1.5 font-semibold text-ambra-scura">
-            <Check className="size-4" aria-hidden="true" />
-            Salvato: {salvata.soggetto} · {salvata.chiave}
+            {inAttesa.has(salvata.id) ? (
+              <CloudUpload className="size-4" aria-hidden="true" />
+            ) : (
+              <Check className="size-4" aria-hidden="true" />
+            )}
+            {inAttesa.has(salvata.id) ? 'Salvato, da inviare' : 'Salvato'}: {salvata.soggetto} · {salvata.chiave}
             {salvata.valore !== null && ` · ${salvata.valore}`}
           </span>
         )}
