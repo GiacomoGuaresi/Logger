@@ -1,9 +1,11 @@
 import { useCallback, useState } from 'react'
 import { CloudOff, CloudUpload, Gauge, Menu } from 'lucide-react'
 import { Diario } from './Diario'
+import { Installa } from './Installa'
+import { installa, useInstallazione } from './installazione'
 import { MenuLaterale } from './MenuLaterale'
 import { Registra } from './Registra'
-import { useRotta } from './rotta'
+import { indirizzi, useRotta } from './rotta'
 import { useVoci } from './useVoci'
 
 /**
@@ -18,9 +20,10 @@ export function App() {
   const chiudiMenu = useCallback(() => setMenuAperto(false), [])
   const { stato, inAttesa, senzaRete, rifiutata, ricarica, mostraAltre, salva, elimina } = useVoci()
   const voci = stato.fase === 'pronto' ? stato.voci : []
+  const statoInstallazione = useInstallazione()
 
   return (
-    <div className="flex min-h-dvh flex-col lg:grid lg:grid-cols-[256px_minmax(0,1fr)] lg:grid-rows-[auto_1fr]">
+    <div className="sfondo-officina flex min-h-dvh flex-col lg:grid lg:grid-cols-[256px_minmax(0,1fr)] lg:grid-rows-[auto_1fr]">
       <header className="sticky top-0 z-1 flex items-center gap-1 border-b border-grafite-scura bg-grafite pt-[env(safe-area-inset-top)] pr-3 pl-1 text-panna lg:col-span-full lg:min-h-11 lg:pl-3">
         <button
           className="grid size-11 place-items-center rounded-[11px] active:bg-grafite-scura lg:hidden"
@@ -45,7 +48,22 @@ export function App() {
           </span>
         )}
       </header>
-      <MenuLaterale aperto={menuAperto} corrente={rotta} onChiudi={chiudiMenu} />
+      <MenuLaterale
+        aperto={menuAperto}
+        corrente={rotta}
+        onChiudi={chiudiMenu}
+        onInstalla={
+          statoInstallazione === 'installata'
+            ? undefined
+            : () => {
+                setMenuAperto(false)
+                // Dove il browser ha dato il suo prompt basta un tocco; dove no,
+                // si aprono le istruzioni.
+                if (statoInstallazione === 'pronta') void installa()
+                else window.location.hash = indirizzi.installa
+              }
+        }
+      />
       <main className="mx-auto w-full max-w-[640px] flex-1 p-3 pb-[calc(12px+env(safe-area-inset-bottom))] lg:col-start-2">
         {senzaRete && stato.fase === 'pronto' && (
           <p className="mt-0 mb-3 flex items-start gap-2 rounded-[11px] bg-fumo px-3 py-2 text-sm text-testo-tenue" role="status">
@@ -58,6 +76,7 @@ export function App() {
             Una riga è stata rifiutata e non è stata salvata: {rifiutata}
           </p>
         )}
+        {rotta === 'installa' && <Installa stato={statoInstallazione} />}
         {/* Registra si apre subito anche mentre le righe arrivano: servono solo ai suggerimenti. */}
         {rotta === 'registra' && <Registra voci={voci} inAttesa={inAttesa} onSalva={salva} />}
         {rotta === 'diario' && stato.fase === 'caricamento' && <p className="mt-8 text-center text-testo-tenue">Carico…</p>}

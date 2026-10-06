@@ -10,9 +10,12 @@ Serve **Node 24** (`node:sqlite`). Nessuna variabile d'ambiente, nessun servizio
 | `npm run prova` | uso di tutti i giorni: build e `vite preview --host`, senza ricaricamenti |
 | `npm test` | Vitest |
 | `npm run build` | controllo dei tipi e build |
+| `npm run certificati` | crea il certificato HTTPS per la rete di casa (serve mkcert) |
+| `npm run icone` | rigenera le icone della PWA da `public/icona.svg` |
+| `npm run sfondo` | rigenera lo sfondo doodle `src/ui/sfondo-officina.svg` |
 
 - **Dal telefono**: stessa rete Wi‑Fi del Mac, indirizzo `http://<IP del Mac>:<porta>/`, stampato da Vite alla voce *Network*. Conviene dare al Mac un IP fisso sul router, così il segnalibro sul telefono non cambia.
-- Il Mac deve essere **acceso e con il server avviato** quando si scrive; se non lo è, dallo step 4 le righe restano in coda sul telefono finché l'app è aperta.
+- Il Mac deve essere **acceso e con il server avviato** quando si scrive; se non lo è, le righe restano in coda sul telefono e partono quando il Mac torna raggiungibile.
 
 ### Database
 
@@ -22,13 +25,13 @@ Serve **Node 24** (`node:sqlite`). Nessuna variabile d'ambiente, nessun servizio
 
 ### HTTPS per la PWA
 
-Il service worker, e quindi l'installazione sulla Home e la shell senza rete, funziona solo in **HTTPS** (fa eccezione `localhost`, che vale solo sul Mac). Allo step 5:
+Il service worker, e quindi l'installazione sulla Home e la shell senza rete, funziona solo in **HTTPS** (fa eccezione `localhost`, che vale solo sul Mac). Una volta sola:
 
-1. installare [mkcert](https://github.com/FiloSottile/mkcert) sul Mac e creare la sua autorità locale (`mkcert -install`);
-2. generare il certificato per l'IP del Mac e passarlo a Vite (`server.https` e `preview.https`, oppure `vite-plugin-mkcert`);
-3. installare sul telefono la radice di mkcert (`mkcert -CAROOT` → `rootCA.pem`) e renderla attendibile (su iOS: Impostazioni → Generali → Info → Impostazioni attendibilità certificati).
+1. installare [mkcert](https://github.com/FiloSottile/mkcert) sul Mac e creare la sua autorità locale: `brew install mkcert && mkcert -install` (chiede la password del Mac, perché aggiunge l'autorità al portachiavi);
+2. `npm run certificati`: crea `certificati/cert.pem` e `key.pem` (fuori da git) per `localhost`, gli IP attuali del Mac e `<nome del Mac>.local`. `vite.config.ts` li usa da solo se ci sono, sia in `dev` sia in `prova`: da lì in poi l'indirizzo è `https://…`. Se l'IP del Mac cambia, si rilancia;
+3. installare sul telefono la radice di mkcert (`mkcert -CAROOT` → `rootCA.pem`, mandata per AirDrop o mail) e renderla attendibile. Su iOS: Impostazioni → Generali → VPN e gestione dispositivi → installa il profilo; poi Impostazioni → Generali → Info → Impostazioni attendibilità certificati → attiva mkcert.
 
-Finché non c'è, l'app sul telefono si apre dal browser come una pagina normale.
+Senza certificato tutto funziona in HTTP come pagina normale, coda senza rete compresa (finché la pagina resta aperta); manca solo l'installazione vera.
 
 ### Versioni
 

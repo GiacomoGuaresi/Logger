@@ -16,21 +16,23 @@ Poi si rilegge tutto nel **diario**, dal più recente. Nient'altro, per ora: le 
 
 - **Registra**: soggetto, chiave, valore facoltativo; la data è quella di adesso. Soggetti e chiavi già usati compaiono come suggerimenti
 - **Diario**: tutte le righe, dalla più recente, raggruppate per giorno; si può eliminare una riga sbagliata
-- **Senza rete** (step 4): se il telefono perde il Wi‑Fi di casa, quello che si scrive resta in coda e parte quando la rete torna
-- **Installabile** sulla schermata Home (step 5)
+- **Senza rete**: se il telefono perde il Wi‑Fi di casa, quello che si scrive resta in coda e parte quando la rete torna, una volta sola
+- **Installabile** sulla schermata Home, con l'HTTPS locale ([05](docs/05-esecuzione.md#https-per-la-pwa))
 
 ## Per iniziare
 
 Serve Node 24 (c'è `node:sqlite`).
 
 ```sh
+nvm use                # Node 24, da .nvmrc
 npm install
-npm run dev      # http://localhost:5173/ sul Mac
+npm run dev            # http://localhost:5173/ sul Mac
 npm test
-npm run prova    # build + server per l'uso di tutti i giorni
+npm run prova          # build + server per l'uso di tutti i giorni (porta 4173)
+npm run certificati    # facoltativo: HTTPS per installare l'app sul telefono
 ```
 
-Dal telefono, sulla stessa rete Wi‑Fi: `http://<IP del Mac>:5173/` (l'indirizzo lo stampa Vite all'avvio, alla voce *Network*). I dati stanno in `dati/logger.db`, fuori da git: per un backup basta copiare il file ([05](docs/05-esecuzione.md)).
+Dal telefono, sulla stessa rete Wi‑Fi: l'indirizzo che Vite stampa all'avvio alla voce *Network* (es. `http://192.168.1.20:5173/`). I dati stanno in `dati/logger.db`, fuori da git: per un backup basta copiare il file ([05](docs/05-esecuzione.md)).
 
 ## In breve
 

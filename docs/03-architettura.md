@@ -61,7 +61,7 @@ Arriva allo step 4 ([06](06-roadmap.md)). Serve quando il telefono perde il Wi�
   - `logger.coda`: le scritture non ancora arrivate all'archivio, dalla più vecchia;
   - `logger.soggetto`: l'ultimo soggetto usato.
 - Ogni **riga ha l'`id` generato dal browser** (`crypto.randomUUID()`) e la data del momento in cui si scrive: una scrittura in coda è un `salva` o un `elimina` per `id`, quindi **rimandarla due volte non fa danni**, e la data resta quella vera anche se arriva dopo.
-- Il **sincronizzatore** svuota la coda in ordine quando l'app si apre, torna la rete (`online`), l'app torna in primo piano o si salva una riga. Si ferma al primo errore di rete e riprova dopo; una scrittura **rifiutata** (dati non validi) si toglie dalla coda e si segnala, per non bloccare le altre.
+- Il **sincronizzatore** (`src/dati/sincronizzatore.ts`) svuota la coda in ordine quando l'app si apre, torna la rete (`online`), l'app torna in primo piano, si salva una riga o, con righe in attesa, ogni 30 secondi. Si ferma al primo errore di rete e riprova dopo; una scrittura **rifiutata** (dati non validi) si toglie dalla coda e si segnala, per non bloccare le altre.
 - Il service worker della PWA mette in cache solo la **shell** dell'app (step 5, serve HTTPS: [05](05-esecuzione.md#https-per-la-pwa)).
 
 ## Stack
@@ -71,12 +71,12 @@ Arriva allo step 4 ([06](06-roadmap.md)). Serve quando il telefono perde il Wi�
 | Linguaggio | TypeScript | anche il server, eseguito da Vite |
 | UI | React 19 | |
 | Build e server | Vite, `--host` | il plugin `/api` vive dentro Vite |
-| Database | SQLite con `node:sqlite` | Node 24; Supabase nella Fase 2 |
+| Database | SQLite con `node:sqlite` | Node 24, dove è ancora segnato sperimentale (stampa un avviso all'avvio); Supabase nella Fase 2 |
 | Routing | hash router | come le altre app, pronto per GitHub Pages |
 | Stile | Tailwind CSS, come Projects e Trekking | palette in [09](09-interfaccia.md) |
 | Icone | lucide-react | |
 | Memoria locale | localStorage | cache e coda, come Grocery |
-| PWA | vite-plugin-pwa | step 5, con HTTPS locale |
+| PWA | vite-plugin-pwa | con HTTPS locale via mkcert ([05](05-esecuzione.md#https-per-la-pwa)) |
 | Test | Vitest, sulla logica pura e sul contratto dell'archivio | |
 | Versioni | git **solo locale**, nessun repository remoto né pipeline | |
 
@@ -98,12 +98,14 @@ Logger/
 ├── docs/
 ├── index.html · vite.config.ts · package.json · tsconfig.json
 ├── server/                # pluginApi.ts, rotte.ts, archivioSqlite.ts (+ test)
+├── scripts/               # certificati.ts, genera-sfondo.ts
 ├── dati/                  # logger.db, escluso da git
+├── certificati/           # cert.pem e key.pem per l'HTTPS, esclusi da git
 ├── public/                # icone PWA (step 5)
 └── src/
     ├── main.tsx
     ├── dominio/           # logica pura + test
-    ├── dati/              # Archivio, ArchivioHttp, contratto.ts, memoria locale
+    ├── dati/              # Archivio, ArchivioHttp, contratto.ts, memoria locale, sincronizzatore
     └── ui/                # guscio, Registra, Diario
 ```
 

@@ -23,4 +23,7 @@
 | 2026-10-06 | **Niente pipeline né pubblicazione online** durante la prova; git **solo locale** | deciso |
 | 2026-10-06 | **Niente passphrase** durante la prova: il server è raggiungibile solo dalla rete di casa | deciso |
 | 2026-10-06 | Restano la **coda senza rete** (step 4) e la **PWA** (step 5, con HTTPS locale via mkcert) | deciso |
-| 2026-10-06 | Colore **grafite** con accento **ambra**, icona Lucide `gauge` | proposto, vedi [Q&A](../Q&A.md) |
+| 2026-10-06 | Colore **grafite** con accento **ambra**, icona Lucide `gauge`, sfondo doodle strada e officina | deciso |
+| 2026-10-06 | **Diario unico** con tutti i soggetti; il filtro per soggetto resta tra le idee per dopo | deciso |
+| 2026-10-06 | Senza rete: la riga si **salva subito** a schermo e in coda, senza aspettare il server; la conferma dice "da inviare" finché non arriva | deciso |
+| 2026-10-06 | HTTPS locale **opzionale**: Vite lo usa se `npm run certificati` ha creato il certificato | deciso |
