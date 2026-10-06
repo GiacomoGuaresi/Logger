@@ -6,6 +6,7 @@ import { mkdirSync } from 'node:fs'
 import { dirname } from 'node:path'
 import { DatabaseSync } from 'node:sqlite'
 import type { Archivio, OpzioniLettura } from '../src/dati/archivio.ts'
+import type { Uso } from '../src/dominio/suggerimenti.ts'
 import type { Voce } from '../src/dominio/voce.ts'
 
 const SCHEMA = `
@@ -45,6 +46,30 @@ export class ArchivioSqlite implements Archivio {
       chiave: String(r.chiave),
       valore: r.valore === null ? null : String(r.valore),
     }))
+  }
+
+  async usi(): Promise<Uso[]> {
+    // L'ultimo valore non vuoto di ogni coppia: con poche centinaia di righe
+    // l'anno la sottoquery costa niente.
+    const righe = this.db
+      .prepare(
+        `select soggetto, chiave, count(*) as volte, max(quando) as ultima_volta,
+           (select valore || char(31) || quando from voci u
+             where u.soggetto = v.soggetto and u.chiave = v.chiave and u.valore is not null
+             order by u.quando desc limit 1) as ultimo
+         from voci v group by soggetto, chiave`,
+      )
+      .all()
+    return righe.map((r) => {
+      const [valore, quando] = r.ultimo === null ? [] : String(r.ultimo).split('\u001f')
+      return {
+        soggetto: String(r.soggetto),
+        chiave: String(r.chiave),
+        volte: Number(r.volte),
+        ultimaVolta: String(r.ultima_volta),
+        ultimoValore: valore === undefined ? null : { valore, quando },
+      }
+    })
   }
 
   async salva(voce: Voce): Promise<void> {

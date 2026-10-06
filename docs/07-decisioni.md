@@ -26,4 +26,7 @@
 | 2026-10-06 | Colore **grafite** con accento **ambra**, icona Lucide `gauge`, sfondo doodle strada e officina | deciso |
 | 2026-10-06 | **Diario unico** con tutti i soggetti; il filtro per soggetto resta tra le idee per dopo | deciso |
 | 2026-10-06 | Senza rete: la riga si **salva subito** a schermo e in coda, senza aspettare il server; la conferma dice "da inviare" finché non arriva | deciso |
+| 2026-10-06 | Soggetto e chiave come **select con ricerca** tra quelli già inseriti, senza valori predefiniti; un valore nuovo si aggiunge dalla stessa select | deciso |
+| 2026-10-06 | Le scelte vengono da un **riepilogo di tutte le righe** (`usi`), non dalle ultime 100 lette | deciso |
+| 2026-10-06 | Il segnaposto del valore è **l'ultimo valore non vuoto** di quel soggetto e quella chiave | deciso |
 | 2026-10-06 | HTTPS locale **opzionale**: Vite lo usa se `npm run certificati` ha creato il certificato | deciso |

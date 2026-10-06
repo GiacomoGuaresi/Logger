@@ -14,7 +14,7 @@ Poi si rilegge tutto nel **diario**, dal più recente. Nient'altro, per ora: le 
 
 ## Cosa fa
 
-- **Registra**: soggetto, chiave, valore facoltativo; la data è quella di adesso. Soggetti e chiavi già usati compaiono come suggerimenti
+- **Registra**: soggetto e chiave si scelgono con una select con ricerca tra quelli già inseriti (o se ne aggiunge uno nuovo), il valore è facoltativo e propone l'ultimo scritto; la data è quella di adesso
 - **Diario**: tutte le righe, dalla più recente, raggruppate per giorno; si può eliminare una riga sbagliata
 - **Senza rete**: se il telefono perde il Wi‑Fi di casa, quello che si scrive resta in coda e parte quando la rete torna, una volta sola
 - **Installabile** sulla schermata Home, con l'HTTPS locale ([05](docs/05-esecuzione.md#https-per-la-pwa))

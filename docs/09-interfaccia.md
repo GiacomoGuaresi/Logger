@@ -31,6 +31,6 @@ Disegno Lucide **`gauge`** (contachilometri) panna su grafite `#3f444e`, in `pub
 
 | Schermata | Contenuto |
 |---|---|
-| **Registra** (`#/`, pagina principale) | tre campi uno sotto l'altro: **Soggetto**, **Chiave**, **Valore**, ognuno con i suggerimenti come pulsanti sotto; **Salva** grande in basso, sempre in vista sopra la tastiera |
+| **Registra** (`#/`, pagina principale) | tre campi uno sotto l'altro: **Soggetto** e **Chiave** sono select con ricerca (elenco a tendina sotto il campo, voce scelta col segno ✓, "Nuovo … «testo»" in fondo), **Valore** è libero con l'ultimo valore come segnaposto; **Salva** grande in basso |
 | **Diario** (`#/diario`) | righe raggruppate per giorno, ognuna con ora, soggetto in piccolo, chiave in evidenza, valore a destra; cestino con conferma; "Mostra altre" in fondo |
 | **Accesso** | dalla Fase 2: solo passphrase, come le altre app |

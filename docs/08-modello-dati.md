@@ -27,7 +27,7 @@ Esempi:
 
 ## Perché così
 
-- **Niente tabelle di soggetti o chiavi**: un soggetto o una chiave nuovi nascono scrivendoli. I suggerimenti si ricavano dalle righe ([03](03-architettura.md#come-funziona)).
+- **Niente tabelle di soggetti o chiavi**: un soggetto o una chiave nuovi nascono scrivendoli. Le scelte e l'ultimo valore si ricavano dalle righe, con un riepilogo per soggetto · chiave ([03](03-architettura.md#come-funziona)); nella Fase 2 diventerà una vista o una funzione in Postgres.
 - **Il valore è testo**: "25€" e "rabbocco mezzo litro" vanno bene così come sono. Se in futuro servono calcoli (km percorsi, spesa), si leggeranno i numeri dal testo o si aggiungerà una colonna: le righe vecchie restano valide.
 - **Stesse colonne in SQLite e Postgres**: il passaggio è una copia, non una conversione.
 

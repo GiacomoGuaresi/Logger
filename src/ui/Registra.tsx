@@ -1,55 +1,29 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Check, CloudUpload } from 'lucide-react'
-import { chiaviUsate, confrontabile, soggettiUsati } from '../dominio/suggerimenti'
+import { chiaviUsate, soggettiUsati, ultimoValore, type Uso } from '../dominio/suggerimenti'
 import { LIMITI, nuovaVoce, type Voce } from '../dominio/voce'
+import { CampoScelta } from './CampoScelta'
 import { leggiUltimoSoggetto, salvaUltimoSoggetto } from './preferenze'
 
 interface Props {
-  /** Le righe già lette: da qui vengono i suggerimenti. */
-  voci: readonly Voce[]
+  /** Il riepilogo di tutte le righe: da qui vengono le scelte e l'ultimo valore. */
+  usi: readonly Uso[]
   /** Le righe non ancora arrivate al Mac: la conferma dice "da inviare" finché non partono. */
   inAttesa: ReadonlySet<string>
   /** Va subito a schermo e in coda; se manca la rete parte dopo, da sola. */
   onSalva: (voce: Voce) => void
 }
 
-/**
- * I suggerimenti come pulsanti sotto un campo: un tocco scrive il testo nel
- * campo. Quello uguale al testo già scritto è segnato.
- */
-function Suggerimenti({ etichetta, testi, attuale, onScegli }: {
-  etichetta: string
-  testi: readonly string[]
-  attuale: string
-  onScegli: (testo: string) => void
-}) {
-  if (testi.length === 0) return null
-  return (
-    <div className="flex flex-wrap gap-1.5" role="group" aria-label={etichetta}>
-      {testi.map((testo) => (
-        <button
-          key={testo}
-          type="button"
-          aria-pressed={confrontabile(testo) === confrontabile(attuale)}
-          onClick={() => onScegli(testo)}
-          className="min-h-9 max-w-full truncate rounded-full border border-bordo bg-white px-3 text-sm hover:border-grafite active:bg-fumo aria-pressed:border-grafite aria-pressed:bg-grafite aria-pressed:text-panna"
-        >
-          {testo}
-        </button>
-      ))}
-    </div>
-  )
-}
-
 const CAMPO =
   'min-h-12 w-full rounded-[11px] border border-bordo bg-white px-3 text-testo outline-none placeholder:text-testo-tenue/70 focus:border-grafite focus:ring-2 focus:ring-ambra/40'
 
 /**
- * La schermata principale (docs/02-funzionalita.md#registra): soggetto, chiave,
- * valore facoltativo e Salva. Il soggetto resta e si ricorda; chiave e valore
- * si svuotano dopo ogni riga, e il fuoco torna sulla chiave per la prossima.
+ * La schermata principale (docs/02-funzionalita.md#registra): soggetto e chiave
+ * sono select con ricerca tra quelli già usati, il valore è libero e suggerisce
+ * l'ultimo scritto per quella chiave. Il soggetto resta e si ricorda; chiave e
+ * valore si svuotano dopo ogni riga, e il fuoco torna sulla chiave per la prossima.
  */
-export function Registra({ voci, inAttesa, onSalva }: Props) {
+export function Registra({ usi, inAttesa, onSalva }: Props) {
   const [soggetto, setSoggetto] = useState(leggiUltimoSoggetto)
   const [chiave, setChiave] = useState('')
   const [valore, setValore] = useState('')
@@ -57,20 +31,15 @@ export function Registra({ voci, inAttesa, onSalva }: Props) {
   /** La conferma breve dopo il salvataggio: cambia a ogni riga, così si riavvia. */
   const [salvata, setSalvata] = useState<Voce | null>(null)
   const campoChiave = useRef<HTMLInputElement>(null)
-  const campoSoggetto = useRef<HTMLInputElement>(null)
   const campoValore = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    // Col soggetto già scelto si parte dalla chiave.
-    ;(soggetto ? campoChiave : campoSoggetto).current?.focus()
-    // Solo all'apertura.
-  }, [])
 
   useEffect(() => {
     if (!salvata) return
     const via = setTimeout(() => setSalvata(null), 2500)
     return () => clearTimeout(via)
   }, [salvata])
+
+  const ultimo = ultimoValore(usi, soggetto, chiave)
 
   const salva = (evento: FormEvent) => {
     evento.preventDefault()
@@ -91,55 +60,27 @@ export function Registra({ voci, inAttesa, onSalva }: Props) {
 
   return (
     <form className="animate-entra flex flex-col gap-4 pt-2" onSubmit={salva} noValidate>
-      <div className="flex flex-col gap-2">
-        <label className="flex flex-col gap-1.5">
-          <span className="font-semibold">Soggetto</span>
-          <input
-            ref={campoSoggetto}
-            className={CAMPO}
-            value={soggetto}
-            onChange={(e) => setSoggetto(e.target.value)}
-            placeholder="moto, auto…"
-            maxLength={LIMITI.soggetto}
-            autoCapitalize="none"
-            autoComplete="off"
-            enterKeyHint="next"
-          />
-        </label>
-        <Suggerimenti
-          etichetta="Soggetti già usati"
-          testi={soggettiUsati(voci)}
-          attuale={soggetto}
-          onScegli={(testo) => {
-            setSoggetto(testo)
-            campoChiave.current?.focus()
-          }}
-        />
-      </div>
-      <div className="flex flex-col gap-2">
-        <label className="flex flex-col gap-1.5">
-          <span className="font-semibold">Chiave</span>
-          <input
-            ref={campoChiave}
-            className={CAMPO}
-            value={chiave}
-            onChange={(e) => setChiave(e.target.value)}
-            placeholder="km, Benzina, Controllo olio…"
-            maxLength={LIMITI.chiave}
-            autoComplete="off"
-            enterKeyHint="next"
-          />
-        </label>
-        <Suggerimenti
-          etichetta="Chiavi già usate"
-          testi={chiaviUsate(voci, soggetto)}
-          attuale={chiave}
-          onScegli={(testo) => {
-            setChiave(testo)
-            campoValore.current?.focus()
-          }}
-        />
-      </div>
+      <CampoScelta
+        etichetta="Soggetto"
+        valore={soggetto}
+        onCambia={setSoggetto}
+        scelte={soggettiUsati(usi)}
+        segnaposto="Cerca o aggiungi un soggetto"
+        nuovo="Nuovo soggetto"
+        maxLength={LIMITI.soggetto}
+        onConferma={() => campoChiave.current?.focus()}
+      />
+      <CampoScelta
+        inputRef={campoChiave}
+        etichetta="Chiave"
+        valore={chiave}
+        onCambia={setChiave}
+        scelte={chiaviUsate(usi, soggetto)}
+        segnaposto="Cerca o aggiungi una chiave"
+        nuovo="Nuova chiave"
+        maxLength={LIMITI.chiave}
+        onConferma={() => campoValore.current?.focus()}
+      />
       <label className="flex flex-col gap-1.5">
         <span>
           <span className="font-semibold">Valore</span> <span className="text-testo-tenue">· facoltativo</span>
@@ -149,7 +90,9 @@ export function Registra({ voci, inAttesa, onSalva }: Props) {
           className={CAMPO}
           value={valore}
           onChange={(e) => setValore(e.target.value)}
-          placeholder="41000, 25€… o vuoto se è solo fatto"
+          // L'ultimo valore scritto per questa chiave, come riferimento: non si salva da solo.
+          placeholder={ultimo ?? ''}
+          aria-description={ultimo ? `Ultimo valore: ${ultimo}` : undefined}
           maxLength={LIMITI.valore}
           autoComplete="off"
           enterKeyHint="done"
@@ -162,7 +105,7 @@ export function Registra({ voci, inAttesa, onSalva }: Props) {
       )}
       <button
         type="submit"
-        className="min-h-12 rounded-[11px] bg-grafite px-4 text-base font-semibold text-panna hover:bg-grafite-scura active:bg-grafite-scura "
+        className="min-h-12 rounded-[11px] bg-grafite px-4 text-base font-semibold text-panna hover:bg-grafite-scura active:bg-grafite-scura"
       >
         Salva
       </button>

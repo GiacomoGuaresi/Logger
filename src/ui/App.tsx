@@ -18,8 +18,7 @@ export function App() {
   const rotta = useRotta()
   const [menuAperto, setMenuAperto] = useState(false)
   const chiudiMenu = useCallback(() => setMenuAperto(false), [])
-  const { stato, inAttesa, senzaRete, rifiutata, ricarica, mostraAltre, salva, elimina } = useVoci()
-  const voci = stato.fase === 'pronto' ? stato.voci : []
+  const { stato, usi, inAttesa, senzaRete, rifiutata, ricarica, mostraAltre, salva, elimina } = useVoci()
   const statoInstallazione = useInstallazione()
 
   return (
@@ -77,8 +76,8 @@ export function App() {
           </p>
         )}
         {rotta === 'installa' && <Installa stato={statoInstallazione} />}
-        {/* Registra si apre subito anche mentre le righe arrivano: servono solo ai suggerimenti. */}
-        {rotta === 'registra' && <Registra voci={voci} inAttesa={inAttesa} onSalva={salva} />}
+        {/* Registra si apre subito anche mentre le righe arrivano: le scelte vengono dalla memoria del dispositivo. */}
+        {rotta === 'registra' && <Registra usi={usi} inAttesa={inAttesa} onSalva={salva} />}
         {rotta === 'diario' && stato.fase === 'caricamento' && <p className="mt-8 text-center text-testo-tenue">Carico…</p>}
         {rotta === 'diario' && stato.fase === 'errore' && (
           <p className="mt-8 px-3 text-center text-testo-tenue" role="alert">

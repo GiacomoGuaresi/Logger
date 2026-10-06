@@ -46,6 +46,11 @@ export async function gestisci(archivio: Archivio, { metodo, url, corpo }: Richi
     }
   }
 
+  if (percorso === '/api/usi') {
+    if (metodo !== 'GET') return errore(405, 'Metodo non ammesso')
+    return { stato: 200, corpo: await archivio.usi() }
+  }
+
   const riga = RIGA.exec(percorso)
   if (riga) {
     const id = decodeURIComponent(riga[1]).toLowerCase()

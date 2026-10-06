@@ -4,7 +4,7 @@
 
 1. Ho appena fatto benzina alla moto.
 2. Apro l'app: il soggetto è già "moto", l'ultimo usato.
-3. Scrivo "Benzina" (o lo tocco tra i suggerimenti), "25€", salvo.
+3. Scelgo "Benzina" dalla lista delle chiavi della moto; il valore mi propone l'ultimo scritto, "25€". Scrivo quello di oggi e salvo.
 4. Più tardi apro il **diario** e vedo la riga con data e ora.
 
 ## Registra
@@ -13,12 +13,15 @@
 
 | Campo | Obbligatorio | Note |
 |---|---|---|
-| **Soggetto** | sì | testo; già impostato sull'ultimo usato su questo dispositivo; sotto, i soggetti già usati come pulsanti da toccare |
-| **Chiave** | sì | testo; sotto, le chiavi già usate **con quel soggetto**, dalla più usata, come pulsanti da toccare |
-| **Valore** | no | testo libero, così com'è ("41000", "25€", "rabbocco mezzo litro") |
+| **Soggetto** | sì | **select con ricerca** tra i soggetti già inseriti, dal più usato; già impostato sull'ultimo usato su questo dispositivo |
+| **Chiave** | sì | **select con ricerca** tra le chiavi già usate **con quel soggetto**, dalla più usata |
+| **Valore** | no | testo libero, così com'è ("41000", "25€", "rabbocco mezzo litro"); il segnaposto mostra **l'ultimo valore** scritto per quel soggetto e quella chiave |
 
 - La **data** è quella del salvataggio; non si modifica (per ora).
-- Spazi in testa e in coda si tolgono. Soggetti e chiavi si confrontano **senza badare a maiuscole e minuscole**: chi scrive "Moto" vede i suggerimenti di "moto", e tra i suggerimenti compare la forma usata più spesso.
+- **Select con ricerca**: toccando il campo si apre l'elenco intero; scrivendo lo si filtra (prima le scelte che iniziano col testo, poi quelle che lo contengono). Le scelte sono **solo quelle già inserite**, nessuna inventata: a database vuoto l'elenco è vuoto. Se il testo non c'è, in fondo compare **Nuovo soggetto «…»** o **Nuova chiave «…»**. Frecce, Invio ed Esc funzionano da tastiera; scelto un soggetto si passa alla chiave, scelta una chiave al valore.
+- Le scelte vengono da **tutte le righe**, non solo dalle ultime lette: una chiave usata una volta l'anno resta nell'elenco. Senza rete valgono quelle in memoria, con le righe ancora in coda già contate.
+- Spazi in testa e in coda si tolgono. Soggetti e chiavi si confrontano **senza badare a maiuscole, minuscole e accenti**: "Moto" e "moto" sono lo stesso soggetto, e nell'elenco compare la forma usata più spesso.
+- L'**ultimo valore** è l'ultimo non vuoto per quella coppia: una riga senza valore ("Controllo olio") non lo cancella. È solo un segnaposto: se non si scrive niente, la riga si salva senza valore.
 - Dopo il salvataggio la chiave e il valore si svuotano, il soggetto resta; una conferma breve dice "Salvato".
 
 ## Diario

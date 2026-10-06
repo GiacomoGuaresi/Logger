@@ -28,9 +28,10 @@ flowchart LR
    | `GET /api/voci?prima=<quando>&limite=100` | il diario, dalla riga più recente; `prima` serve a "Mostra altre" |
    | `PUT /api/voci/:id` | salva una riga; se l'`id` esiste già la sovrascrive (upsert), così rimandarla non crea doppioni |
    | `DELETE /api/voci/:id` | elimina una riga; eliminarne una che non c'è non è un errore |
+   | `GET /api/usi` | il riepilogo di tutte le righe: una voce per coppia soggetto · chiave, con quante volte, l'ultima volta e l'ultimo valore non vuoto |
 
    I dati arrivano dal browser e si controllano anche sul server, con la stessa pulizia del dominio (`src/dominio/`).
-4. I **suggerimenti** di soggetti e chiavi si calcolano nel browser dalle righe già lette: con qualche centinaio di righe all'anno non serve altro.
+4. Le **scelte** di soggetti e chiavi e l'**ultimo valore** vengono dal riepilogo `GET /api/usi`, non dalle righe lette per il diario: così ci sono anche i soggetti e le chiavi usati di rado. Il raggruppamento senza maiuscole e accenti si fa nel browser (`src/dominio/suggerimenti.ts`); il riepilogo si tiene in memoria per quando manca la rete, e le righe in coda ci si aggiungono subito.
 
 ## Archivio sostituibile
 
@@ -39,6 +40,7 @@ Il resto dell'app conosce solo l'interfaccia **`Archivio`**, come lo `Storage` d
 ```ts
 interface Archivio {
   leggi(opzioni: { prima?: string; limite: number }): Promise<Voce[]>
+  usi(): Promise<Uso[]>              // riepilogo per soggetto · chiave
   salva(voce: Voce): Promise<void>   // upsert per id
   elimina(id: string): Promise<void>
 }
@@ -58,6 +60,7 @@ Arriva allo step 4 ([06](06-roadmap.md)). Serve quando il telefono perde il Wi�
 
 - **Memoria locale** in `localStorage`, dietro un'interfaccia `Scaffale` (nei test una `Map`):
   - `logger.voci`: le ultime righe lette, per aprire il diario subito;
+  - `logger.usi`: il riepilogo per le scelte di Registra;
   - `logger.coda`: le scritture non ancora arrivate all'archivio, dalla più vecchia;
   - `logger.soggetto`: l'ultimo soggetto usato.
 - Ogni **riga ha l'`id` generato dal browser** (`crypto.randomUUID()`) e la data del momento in cui si scrive: una scrittura in coda è un `salva` o un `elimina` per `id`, quindi **rimandarla due volte non fa danni**, e la data resta quella vera anche se arriva dopo.
@@ -86,7 +89,8 @@ Come nelle altre app, i test coprono la **logica pura**:
 - pulizia e validazione di soggetto, chiave e valore;
 - contratto dell'archivio: salva e rilegge, upsert per id, ordine dal più recente, pagina con `prima` e `limite`, eliminazione anche di una riga che non c'è;
 - rotte dell'API: risposte e codici per richieste valide e non valide;
-- suggerimenti: soggetti e chiavi per soggetto, confronto senza maiuscole, ordine per uso, forma più usata;
+- scelte: soggetti e chiavi per soggetto, confronto senza maiuscole e accenti, ordine per uso, forma più usata, filtro della ricerca, ultimo valore della coppia;
+- contratto del riepilogo `usi`: conteggi e ultimo valore non vuoto;
 - raggruppamento del diario per giorno ("Oggi", "Ieri", data);
 - dallo step 4: coda (aggiunta, invio in ordine, stop al primo errore di rete, scarto delle scritture rifiutate) e lettura della memoria locale con dati vecchi o rovinati.
 
