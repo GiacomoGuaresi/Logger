@@ -50,6 +50,6 @@ Come Trekking ([05](05-esecuzione.md#pubblicazione)). Si parte da una tabella vu
 - [x] Via il server locale: SQLite, `/api`, `ArchivioHttp`, certificati e dati di prova
 - [x] `base: '/Logger/'` e workflow `pubblica.yml`
 - [x] Script SQL applicati sul progetto di produzione, `logger` negli Exposed schemas, redirect di Auth (2026-10-07)
-- [ ] Repository pubblico `GiacomoGuaresi/Logger` con le variabili, Pages attivo, primo deploy
-- [ ] Checklist di sicurezza ([04](04-sicurezza.md#checklist-prima-di-pubblicare))
+- [x] Repository pubblico `GiacomoGuaresi/Logger` con le variabili, Pages attivo, primo deploy (2026-10-07)
+- [x] Checklist di sicurezza ([04](04-sicurezza.md#checklist-prima-di-pubblicare))
 - [ ] Prova da telefono: accesso (o sessione già aperta da un'altra app), installazione, una riga col Wi‑Fi spento che arriva quando torna

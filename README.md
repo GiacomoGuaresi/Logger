@@ -10,7 +10,7 @@ auto · Controllo olio            ← nessun valore: è solo il segno che è sta
 
 Poi si rilegge tutto nel **diario**, dal più recente. Nient'altro, per ora: le funzionalità si aggiungono quando ci si accorge che servono. Quarta app di casa dopo **Grocery**, **Projects** e **Trekking**.
 
-> **Stato: versione 1.0, verso la produzione.** Il codice è pronto per Supabase e GitHub Pages su `https://giacomoguaresi.github.io/Logger/`; mancano gli script SQL applicati, il repository pubblico e la prima pubblicazione ([roadmap](docs/06-roadmap.md), Fase 2).
+> **Stato: in produzione dalla 1.0** su **https://giacomoguaresi.github.io/Logger/**, con i dati su Supabase ([roadmap](docs/06-roadmap.md)).
 
 ## Cosa fa
 
