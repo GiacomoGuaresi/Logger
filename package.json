@@ -13,11 +13,11 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "icone": "pwa-assets-generator",
-    "sfondo": "node scripts/genera-sfondo.ts",
-    "certificati": "node scripts/certificati.ts",
-    "storico": "node scripts/storico-di-prova.ts"
+    "sfondo": "node scripts/genera-sfondo.ts"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.117.2",
     "lucide-react": "^1.46.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"

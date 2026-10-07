@@ -12,7 +12,7 @@ interface Props {
   soggettoIniziale: string
   /** Il riepilogo di tutte le righe: da qui vengono le scelte e l'ultimo valore. */
   usi: readonly Uso[]
-  /** Le righe non ancora arrivate al Mac: la conferma dice "da inviare" finché non partono. */
+  /** Le righe non ancora arrivate all'archivio: la conferma dice "da inviare" finché non partono. */
   inAttesa: ReadonlySet<string>
   /** Va subito a schermo e in coda; se manca la rete parte dopo, da sola. */
   onSalva: (voce: Voce) => void

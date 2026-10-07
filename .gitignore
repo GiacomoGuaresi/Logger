@@ -5,11 +5,12 @@ dist/
 *.tsbuildinfo
 npm-debug.log*
 
-# Il database della prova in locale (docs/05-esecuzione.md): mai in git
-dati/
-
-# Certificati HTTPS locali (step 5)
-certificati/
+# Il database e i certificati della prova in locale, prima di Supabase: se
+# sono ancora sul disco, non devono finire in git (il repository è pubblico).
+# Con la barra davanti, solo quelli alla radice: senza, `dati/` escludeva
+# anche src/dati/.
+/dati/
+/certificati/
 
 # Env
 .env

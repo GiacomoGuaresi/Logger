@@ -10,34 +10,36 @@ auto · Controllo olio            ← nessun valore: è solo il segno che è sta
 
 Poi si rilegge tutto nel **diario**, dal più recente. Nient'altro, per ora: le funzionalità si aggiungono quando ci si accorge che servono. Quarta app di casa dopo **Grocery**, **Projects** e **Trekking**.
 
-> **Stato: prova in locale.** L'app gira sul Mac con un database SQLite, si usa dal Mac e dal telefono sulla rete di casa. Niente pubblicazione online né pipeline: se la prova regge, si passa a Supabase ([roadmap](docs/06-roadmap.md), Fase 2).
+> **Stato: versione 1.0, verso la produzione.** Il codice è pronto per Supabase e GitHub Pages su `https://giacomoguaresi.github.io/Logger/`; mancano gli script SQL applicati, il repository pubblico e la prima pubblicazione ([roadmap](docs/06-roadmap.md), Fase 2).
 
 ## Cosa fa
 
-- **Registra**: soggetto e chiave si toccano tra quelli già inseriti (o se ne aggiunge uno nuovo), il valore è facoltativo e propone l'ultimo scritto, col tastierino numerico e l'unità già messa se era un numero; la data è quella di adesso
-- **Diario**: un diario per soggetto, come timeline verticale dalla giornata più recente, con le righe dello stesso giorno insieme; si può eliminare una riga sbagliata
-- **Senza rete**: se il telefono perde il Wi‑Fi di casa, quello che si scrive resta in coda e parte quando la rete torna, una volta sola
-- **Installabile** sulla schermata Home, con l'HTTPS locale ([05](docs/05-esecuzione.md#https-per-la-pwa))
+- **Registra**: soggetto e chiave si toccano tra quelli già inseriti (o se ne aggiunge uno nuovo), il valore è facoltativo e propone l'ultimo scritto, col tastierino numerico e l'unità già messa se era un numero; la data è adesso, oppure ieri o quando si vuole
+- **Diario**: un diario per soggetto, come timeline verticale dalla giornata più recente, con le righe dello stesso giorno insieme e un filtro per chiave; toccando una riga la si corregge, data compresa, o la si elimina (con Annulla)
+- **Senza rete**: quello che si scrive resta in coda sul telefono e parte quando la rete torna, una volta sola
+- **Accesso** con la sola passphrase, con la sessione condivisa con le altre app di casa
+- **Installabile** sulla schermata Home
 
 ## Per iniziare
 
-Serve Node 24 (c'è `node:sqlite`).
+Serve Node 24 e un `.env.local` copiato da `.env.example`, con gli stessi valori delle altre app.
 
 ```sh
 nvm use                # Node 24, da .nvmrc
 npm install
-npm run dev            # http://localhost:5173/ sul Mac
+cp .env.example .env.local   # e riempilo
+npm run dev            # http://localhost:5173/Logger/ (dati veri di produzione!)
 npm test
-npm run prova          # build + server per l'uso di tutti i giorni (porta 4173)
-npm run certificati    # facoltativo: HTTPS per installare l'app sul telefono
+npm run prova          # build + anteprima, com'è in produzione
 ```
 
-Dal telefono, sulla stessa rete Wi‑Fi: l'indirizzo che Vite stampa all'avvio alla voce *Network* (es. `http://192.168.1.20:5173/`). I dati stanno in `dati/logger.db`, fuori da git: per un backup basta copiare il file ([05](docs/05-esecuzione.md)).
+Pubblicazione, Supabase e backup: [05](docs/05-esecuzione.md).
 
 ## In breve
 
 - **Frontend**: Vite + React + TypeScript + Tailwind, installabile come PWA
-- **Dati**: SQLite (`node:sqlite`) sul Mac, dietro una piccola API servita da Vite stesso; più avanti [Supabase](https://supabase.com), come le altre app
+- **Dati**: [Supabase](https://supabase.com), progetto condiviso con le altre app, schema `logger`; accesso con passphrase
+- **Hosting**: GitHub Pages
 - **Lingua**: italiano · **Costo**: 0 € · **Licenza**: MIT
 
 ## Documentazione
@@ -46,11 +48,11 @@ Dal telefono, sulla stessa rete Wi‑Fi: l'indirizzo che Vite stampa all'avvio a
 |---|---|
 | [docs/01-visione.md](docs/01-visione.md) | Scopo, utenti, principi, cosa non è |
 | [docs/02-funzionalita.md](docs/02-funzionalita.md) | Funzionalità e idee per dopo |
-| [docs/03-architettura.md](docs/03-architettura.md) | Server locale, archivio sostituibile, coda offline, struttura cartelle |
-| [docs/04-sicurezza.md](docs/04-sicurezza.md) | Rete di casa oggi, passphrase e permessi con Supabase |
-| [docs/05-esecuzione.md](docs/05-esecuzione.md) | Avvio in locale, HTTPS per la PWA, backup; pubblicazione nella Fase 2 |
+| [docs/03-architettura.md](docs/03-architettura.md) | Supabase, archivio sostituibile, coda offline, struttura cartelle |
+| [docs/04-sicurezza.md](docs/04-sicurezza.md) | Passphrase, chiavi e permessi su Supabase |
+| [docs/05-esecuzione.md](docs/05-esecuzione.md) | Sviluppo, pubblicazione, Supabase, backup |
 | [docs/06-roadmap.md](docs/06-roadmap.md) | Step di sviluppo |
 | [docs/07-decisioni.md](docs/07-decisioni.md) | Registro delle decisioni |
-| [docs/08-modello-dati.md](docs/08-modello-dati.md) | La tabella delle righe, in SQLite e in Postgres |
+| [docs/08-modello-dati.md](docs/08-modello-dati.md) | La tabella delle righe e il riepilogo, in Postgres |
 | [docs/09-interfaccia.md](docs/09-interfaccia.md) | Struttura, palette, icona, schermate |
 | [Q&A.md](Q&A.md) | Domande ancora aperte |

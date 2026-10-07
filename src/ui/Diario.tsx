@@ -14,7 +14,7 @@ interface Props {
   /** Le chiavi del soggetto, dalla più usata, con quante righe: il filtro sopra la timeline. */
   chiavi: readonly { testo: string; volte: number }[]
   stato: StatoVoci
-  /** Le righe con una scrittura non ancora arrivata al Mac: hanno il segno "da inviare". */
+  /** Le righe con una scrittura non ancora arrivata all'archivio: hanno il segno "da inviare". */
   inAttesa: ReadonlySet<string>
   onMostraAltre: () => Promise<void>
   /** Riscrive una riga che c'era già (corretta, o rimessa con Annulla). Va subito a schermo; senza rete parte dopo. */

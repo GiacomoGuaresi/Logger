@@ -83,7 +83,7 @@ export function App() {
         {senzaRete && soggetti.fase === 'pronto' && (
           <p className="mt-0 mb-3 flex items-start gap-2 rounded-[11px] bg-fumo px-3 py-2 text-sm text-testo-tenue" role="status">
             <CloudOff className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-            <span>Il Mac non risponde: vedi le righe salvate su questo dispositivo, quelle nuove partono quando torna.</span>
+            <span>Senza rete: vedi le righe salvate su questo dispositivo, quelle nuove partono quando torna.</span>
           </p>
         )}
         {rifiutata && (

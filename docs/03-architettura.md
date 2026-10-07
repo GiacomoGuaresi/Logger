@@ -2,44 +2,33 @@
 
 ## Schema generale
 
-Oggi, nella prova in locale:
+Dalla Fase 2 Logger è un sito statico su **GitHub Pages** che parla direttamente con **Supabase**, come Grocery, Projects e Trekking. Niente server da tenere acceso.
 
 ```mermaid
 flowchart LR
-  M[Browser sul Mac] -->|localhost:5173| V
-  T[Telefono · stesso Wi-Fi] -->|IP del Mac:5173| V
+  T[Telefono / browser] -->|https| GP[GitHub Pages<br/>giacomoguaresi.github.io/Logger]
   T <-->|coda e cache| LS[(localStorage)]
-  subgraph MAC[Mac]
-    V[Vite<br/>app + plugin /api] --> DB[(dati/logger.db<br/>SQLite)]
+  T -->|supabase-js, sessione nei cookie| SB
+  subgraph SB[Supabase · progetto di Grocery]
+    A[Auth<br/>account condiviso] --- P[(schema logger<br/>voci · vista usi)]
   end
-  V -.->|Fase 2| SB[(Supabase<br/>schema logger)]
 ```
+
+> La prova in locale (Fase 1) girava sul Mac con SQLite dentro Vite: a ottobre 2026 è stata tolta, e in produzione si è partiti da un database vuoto ([07](07-decisioni.md)).
 
 ## Come funziona
 
-1. **Un solo processo**: Vite serve l'app e, con un plugin (`server/pluginApi.ts`), anche le rotte `/api`. Il plugin si aggancia sia al server di sviluppo (`configureServer`) sia a `vite preview` (`configurePreviewServer`).
-   - `npm run dev` → `vite --host`: l'app si apre dal Mac e, all'IP del Mac, dal telefono;
-   - `npm run prova` → build + `vite preview --host`, per l'uso di tutti i giorni.
-2. Il database è **SQLite**, con il modulo **`node:sqlite`** incluso in Node 24: nessuna dipendenza nativa da compilare. Il file è `dati/logger.db`, escluso da git; la tabella si crea all'avvio se manca ([08](08-modello-dati.md)).
-3. L'**API** è minima, in JSON:
-
-   | Rotta | Cosa fa |
-   |---|---|
-   | `GET /api/voci?soggetto=moto&soggetto=Moto&prima=<quando>&limite=100` | il diario di un soggetto (tutte le forme scritte), dalla riga più recente; `prima` serve a "Mostra altre"; senza `soggetto`, le righe di tutti |
-   | `PUT /api/voci/:id` | salva una riga; se l'`id` esiste già la sovrascrive (upsert), così rimandarla non crea doppioni |
-   | `DELETE /api/voci/:id` | elimina una riga; eliminarne una che non c'è non è un errore |
-   | `GET /api/usi` | il riepilogo di tutte le righe: una voce per coppia soggetto · chiave, con quante volte, l'ultima volta e l'ultimo valore non vuoto |
-
-   I dati arrivano dal browser e si controllano anche sul server, con la stessa pulizia del dominio (`src/dominio/`).
-4. Le **scelte** di soggetti e chiavi e l'**ultimo valore** vengono dal riepilogo `GET /api/usi`, non dalle righe lette per il diario: così ci sono anche i soggetti e le chiavi usati di rado. Il raggruppamento senza maiuscole e accenti si fa nel browser (`src/dominio/suggerimenti.ts`); il riepilogo si tiene in memoria per quando manca la rete, e le righe in coda ci si aggiungono subito.
+1. **Accesso**: finché non c'è una sessione si vede solo la passphrase (`src/ui/ConAccesso.tsx`). La sessione sta nei cookie con percorso `/`, condivisa con le altre app di casa ([04](04-sicurezza.md)).
+2. **Dati**: una tabella `logger.voci` e una vista `logger.usi` ([08](08-modello-dati.md)), lette e scritte dal browser con la chiave publishable; le policy vogliono la sessione.
+3. Le **scelte** di soggetti e chiavi e l'**ultimo valore** vengono dal riepilogo `logger.usi`, non dalle righe lette per il diario: così ci sono anche i soggetti e le chiavi usati di rado. Il raggruppamento senza maiuscole e accenti si fa nel browser (`src/dominio/suggerimenti.ts`); il riepilogo si tiene in memoria per quando manca la rete, e le righe in coda ci si aggiungono subito.
 
 ## Archivio sostituibile
 
-Il resto dell'app conosce solo l'interfaccia **`Archivio`**, come lo `Storage` di Grocery (`Grocery/src/storage/tipi.ts`):
+Il resto dell'app conosce solo l'interfaccia **`Archivio`** (`src/dati/archivio.ts`), come lo `Storage` di Grocery:
 
 ```ts
 interface Archivio {
-  leggi(opzioni: { prima?: string; limite: number }): Promise<Voce[]>
+  leggi(opzioni: { soggetti?: string[]; prima?: string; limite: number }): Promise<Voce[]>
   usi(): Promise<Uso[]>              // riepilogo per soggetto · chiave
   salva(voce: Voce): Promise<void>   // upsert per id
   elimina(id: string): Promise<void>
@@ -48,77 +37,77 @@ interface Archivio {
 
 | Implementazione | Dove gira | Quando |
 |---|---|---|
-| `ArchivioSqlite` | server (plugin di Vite) | oggi |
-| `ArchivioHttp` | browser, parla con `/api` | oggi |
-| `ArchivioSupabase` | browser, parla con Supabase | Fase 2 |
+| `ArchivioSupabase` | browser, parla con Supabase | nell'app |
+| `ArchivioInMemoria` | test | nei test del sincronizzatore |
 
-I **test di contratto** (`src/dati/contratto.ts`, `verificaContratto(apriVuoto)`, come `Grocery/src/storage/contratto.ts`) descrivono cosa ci si aspetta da qualunque archivio. Oggi girano su `ArchivioSqlite` con un database `:memory:`; nella Fase 2 gli stessi test devono passare su `ArchivioSupabase`. Così il passaggio cambia una riga nel punto d'ingresso dei dati, non l'app.
+I **test di contratto** (`src/dati/contratto.ts`, `verificaContratto(apriVuoto)`) descrivono cosa ci si aspetta da qualunque archivio. Girano sempre su `ArchivioInMemoria`, e su `ArchivioSupabase` quando ci sono le variabili `SUPABASE_TEST_*` di un Supabase locale (`supabase start` con gli script di `supabase/sql/`): mai contro la produzione, perché ogni test svuota la tabella.
+
+`ArchivioSupabase` distingue due errori, che decidono cosa fa la coda:
+- **rifiutato** (`ErroreRifiutato`): codici SQLSTATE di classe 22 o 23, cioè dati che il database non accetta; riprovare non serve, la scrittura si toglie e si segnala;
+- **rete** (`ErroreRete`): tutto il resto, compresa la sessione scaduta; la scrittura resta in coda e riparte dopo.
 
 ## Senza rete
 
-Arriva allo step 4 ([06](06-roadmap.md)). Serve quando il telefono perde il Wi‑Fi di casa con l'app aperta, e servirà ancora di più con Supabase. Lo schema è quello di Grocery (`Grocery/src/storage/memoriaLocale.ts` e `sincronizzatore.ts`), più semplice:
+Lo schema è quello di Grocery (`memoriaLocale.ts` e `sincronizzatore.ts`), più semplice:
 
 - **Memoria locale** in `localStorage`, dietro un'interfaccia `Scaffale` (nei test una `Map`):
   - `logger.diari`: le ultime righe lette di ogni diario, per aprirlo subito;
   - `logger.usi`: il riepilogo per le card dei diari e le scelte di Registra;
-  - `logger.coda`: le scritture non ancora arrivate all'archivio, dalla più vecchia;
-- Ogni **riga ha l'`id` generato dal browser** (`crypto.randomUUID()`) e la data del momento in cui si scrive: una scrittura in coda è un `salva` o un `elimina` per `id`, quindi **rimandarla due volte non fa danni**, e la data resta quella vera anche se arriva dopo.
-- Il **sincronizzatore** (`src/dati/sincronizzatore.ts`) svuota la coda in ordine quando l'app si apre, torna la rete (`online`), l'app torna in primo piano, si salva una riga o, con righe in attesa, ogni 30 secondi. Si ferma al primo errore di rete e riprova dopo; una scrittura **rifiutata** (dati non validi) si toglie dalla coda e si segnala, per non bloccare le altre.
-- Il service worker della PWA mette in cache solo la **shell** dell'app (step 5, serve HTTPS: [05](05-esecuzione.md#https-per-la-pwa)).
+  - `logger.coda`: le scritture non ancora arrivate all'archivio, dalla più vecchia.
+- Ogni **riga ha l'`id` generato dal browser** (`crypto.randomUUID()`) e la sua data: una scrittura in coda è un `salva` o un `elimina` per `id`, quindi **rimandarla due volte non fa danni**, e la data resta quella vera anche se arriva dopo.
+- Una **modifica** (dal diario, o Annulla dopo un'eliminazione) è un `salva` con lo stesso id e il segno `modifica`: non conta come riga nuova, e dopo l'invio il riepilogo si rilegge.
+- Il **sincronizzatore** (`src/dati/sincronizzatore.ts`) svuota la coda in ordine quando l'app si apre, torna la rete (`online`), l'app torna in primo piano, si salva una riga o, con righe in attesa, ogni 30 secondi. Si ferma al primo errore di rete e riprova dopo; una scrittura rifiutata si toglie dalla coda e si segnala, per non bloccare le altre.
+- Il service worker della PWA mette in cache solo la **shell** dell'app; Supabase va sempre in rete.
 
 ## Stack
 
 | Livello | Scelta | Note |
 |---|---|---|
-| Linguaggio | TypeScript | anche il server, eseguito da Vite |
+| Linguaggio | TypeScript | |
 | UI | React 19 | |
-| Build e server | Vite, `--host` | il plugin `/api` vive dentro Vite |
-| Database | SQLite con `node:sqlite` | Node 24, dove è ancora segnato sperimentale (stampa un avviso all'avvio); Supabase nella Fase 2 |
-| Routing | hash router | come le altre app, pronto per GitHub Pages |
+| Build | Vite, `base: '/Logger/'` | `npm run dev` con `--host`, per provarla dal telefono |
+| Database e accesso | Supabase (`@supabase/supabase-js`, `@supabase/ssr`) | progetto di produzione di Grocery, schema `logger` |
+| Routing | hash router | GitHub Pages non vede mai le rotte |
 | Stile | Tailwind CSS, come Projects e Trekking | palette in [09](09-interfaccia.md) |
 | Icone | lucide-react | |
 | Memoria locale | localStorage | cache e coda, come Grocery |
-| PWA | vite-plugin-pwa | con HTTPS locale via mkcert ([05](05-esecuzione.md#https-per-la-pwa)) |
+| PWA | vite-plugin-pwa | |
 | Test | Vitest, sulla logica pura e sul contratto dell'archivio | |
-| Versioni | git **solo locale**, nessun repository remoto né pipeline | |
+| Pubblicazione | GitHub Actions → GitHub Pages | `.github/workflows/pubblica.yml`, come Trekking |
 
 ## Test
 
 Come nelle altre app, i test coprono la **logica pura**:
-- pulizia e validazione di soggetto, chiave e valore;
-- contratto dell'archivio: salva e rilegge, upsert per id, ordine dal più recente, pagina con `prima` e `limite`, eliminazione anche di una riga che non c'è;
-- rotte dell'API: risposte e codici per richieste valide e non valide;
-- scelte: soggetti e chiavi per soggetto, confronto senza maiuscole e accenti, ordine per uso, forma più usata, filtro della ricerca, ultimo valore della coppia;
-- contratto del riepilogo `usi`: conteggi e ultimo valore non vuoto;
-- giornate della timeline (gg/mm/aaaa nel fuso di chi guarda) e date delle card ("oggi 08:12");
-- dallo step 4: coda (aggiunta, invio in ordine, stop al primo errore di rete, scarto delle scritture rifiutate) e lettura della memoria locale con dati vecchi o rovinati.
+- pulizia e validazione di soggetto, chiave e valore; data scelta a mano mai nel futuro;
+- contratto dell'archivio: salva e rilegge, upsert per id, ordine dal più recente, pagina con `prima` e `limite`, filtro per soggetti, riepilogo `usi`, eliminazione anche di una riga che non c'è;
+- su Supabase (facoltativi): stesso contratto, check del database come errore "rifiutato", niente righe né riepilogo senza sessione, passphrase giusta e sbagliata;
+- scelte: soggetti e chiavi per soggetto, confronto senza maiuscole e accenti, ordine per uso, forma più usata, filtro della ricerca, ultimo valore della coppia, chiavi con il loro conto;
+- valori numerici e unità ("27" → "27€");
+- date: campo `datetime-local` in andata e ritorno, "Oggi/Ieri/02/10", giornate della timeline nel fuso di chi guarda, date delle card;
+- coda e sincronizzatore: invio in ordine, stop al primo errore di rete, scarto delle scritture rifiutate, modifica e Annulla con e senza rete, memoria locale vecchia o rovinata.
 
 ## Struttura cartelle
 
 ```
 Logger/
-├── README.md · Q&A.md · LICENSE
+├── README.md · Q&A.md · LICENSE · .env.example
+├── .github/workflows/     # pubblica.yml: test, build e deploy su GitHub Pages
 ├── docs/
 ├── index.html · vite.config.ts · package.json · tsconfig.json
-├── server/                # pluginApi.ts, rotte.ts, archivioSqlite.ts (+ test)
-├── scripts/               # certificati.ts, genera-sfondo.ts, storico-di-prova.ts
-├── dati/                  # logger.db, escluso da git
-├── certificati/           # cert.pem e key.pem per l'HTTPS, esclusi da git
-├── public/                # icone PWA (step 5)
+├── supabase/sql/          # 001_schema, 002_voci, 003_usi: applicati a mano
+├── scripts/               # genera-sfondo.ts
+├── public/                # icone PWA
 └── src/
     ├── main.tsx
     ├── dominio/           # logica pura + test
-    ├── dati/              # Archivio, ArchivioHttp, contratto.ts, memoria locale, sincronizzatore
-    └── ui/                # guscio, Registra, Diario
+    ├── dati/              # Archivio, ArchivioSupabase, accesso, contratto, memoria locale, sincronizzatore
+    └── ui/                # guscio, accesso, Registra, Diario
 ```
 
-Lo scaffold si copia da Trekking, senza le parti di Supabase, mappa e Markdown.
+## Convivenza con le altre app
 
-## Dopo la prova: convivenza con le altre app
-
-Nella Fase 2 Logger passa al **progetto Supabase di produzione di Grocery**, come Projects e Trekking:
+Logger sta nel **progetto Supabase di produzione di Grocery**, come Projects e Trekking:
 
 - **schema Postgres dedicato `logger`**, aggiunto agli *Exposed schemas* dell'API; il client si crea con `db: { schema: 'logger' }`;
 - **autenticazione condivisa**: stesso utente Auth delle altre app, sessione nei cookie con percorso `/`;
-- **migrazioni** in `supabase/sql/NNN_descrizione.sql`, numerate e applicate a mano; lo storico della CLI resta a Grocery;
-- le righe di `logger.db` si copiano con uno script, mantenendo `id` e `quando` ([08](08-modello-dati.md#passaggio-a-supabase)).
+- **migrazioni** in `supabase/sql/NNN_descrizione.sql`, numerate e applicate a mano dalla cartella di Grocery; lo storico della CLI resta a Grocery.

@@ -42,7 +42,7 @@ Un **diario per soggetto**, separato dagli altri: prima si sceglie il soggetto, 
 
 ## Senza rete
 
-Arriva allo step 4 della [roadmap](06-roadmap.md). Durante la prova in locale serve quando il telefono perde il Wi‑Fi di casa con l'app aperta:
+Serve quando il telefono è senza rete (in garage, in montagna, in metropolitana):
 
 - all'apertura il diario si mostra subito dalle righe salvate sul dispositivo, poi si aggiorna;
 - registrare ed eliminare funzionano anche senza rete: le scritture vanno in una coda locale e partono quando la rete torna;

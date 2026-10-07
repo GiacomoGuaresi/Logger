@@ -42,7 +42,7 @@ export function Installa({ stato }: { stato: StatoInstallazione }) {
     <section className={riquadro}>
       <h2 className="text-lg font-semibold">Mettila sulla schermata Home</h2>
       <p className="text-testo-tenue">
-        Installata si apre a schermo intero, come un'app. Le righe arrivano al Mac quando il telefono è sulla rete di casa; fuori casa aspettano in coda.
+        Installata si apre a schermo intero, come un'app. Le righe scritte senza rete aspettano in coda sul telefono e partono quando la rete torna.
       </p>
       <ol className="flex list-decimal flex-col gap-1.5 pl-5">
         {passi.map((passo) => (

@@ -4,9 +4,9 @@
 |---|---|---|
 | 2026-10-05 | Nuova app di casa chiamata **Logger**, repository pubblico, licenza **MIT** | deciso |
 | 2026-10-05 | **Stessa struttura, tecnologia e database** di Grocery, Projects e Trekking | deciso |
-| 2026-10-05 | Hosting **GitHub Pages** su `giacomoguaresi.github.io/Logger` | rimandato alla Fase 2 |
-| 2026-10-05 | **Progetto Supabase di produzione di Grocery**, schema dedicato `logger`, script SQL numerati applicati a mano | rimandato alla Fase 2 |
-| 2026-10-05 | Accesso con **lo stesso account e la sola passphrase**, sessione condivisa con le altre app | rimandato alla Fase 2 |
+| 2026-10-05 | Hosting **GitHub Pages** su `giacomoguaresi.github.io/Logger` | deciso, dalla Fase 2 |
+| 2026-10-05 | **Progetto Supabase di produzione di Grocery**, schema dedicato `logger`, script SQL numerati applicati a mano | deciso, dalla Fase 2 |
+| 2026-10-05 | Accesso con **lo stesso account e la sola passphrase**, sessione condivisa con le altre app | deciso, dalla Fase 2 |
 | 2026-10-05 | ~~Soggetti e tipi di evento definiti dall'app, con campi e valori in `jsonb`~~ | superata il 2026-10-06 |
 | 2026-10-05 | ~~Prima versione con registrazione per tipo e cronologia per soggetto~~ | superata il 2026-10-06 |
 | 2026-10-05 | **Funziona senza rete**: cache e coda in `localStorage` come Grocery, **id generati dal browser**, reinvio idempotente | deciso, allo step 4 |
@@ -42,3 +42,9 @@
 | 2026-10-06 | **Modifica di una riga** dal diario: chiave, valore e data, non il soggetto; stesso id, quindi è una riscrittura idempotente come le altre e funziona senza rete | deciso |
 | 2026-10-06 | **Eliminare subito con Annulla** al posto della conferma: Annulla riscrive la stessa riga | deciso |
 | 2026-10-06 | **Tema generico**: sfondo doodle a tema diario e descrizione "Diario minimo di tutto quello che vuoi tenere a mente", come l'icona `notebook-pen` | deciso |
+| 2026-10-07 | **Si va in produzione** (Fase 2) dopo la 1.0, senza le settimane di uso in locale: l'uso reale si fa su Supabase | deciso |
+| 2026-10-07 | **Partenza pulita**: le righe di `logger.db` erano solo di prova e non si copiano; niente script di migrazione | deciso |
+| 2026-10-07 | Via il **server locale** (SQLite, `/api`, `ArchivioHttp`, certificati, dati di prova): un solo archivio, `ArchivioSupabase`; i test del sincronizzatore usano `ArchivioInMemoria` | deciso |
+| 2026-10-07 | Su Supabase un errore è **"rifiutato"** solo con SQLSTATE di classe 22 o 23 (dati non validi); tutto il resto, sessione scaduta compresa, lascia la scrittura in coda | deciso |
+| 2026-10-07 | Riepilogo `usi` come **vista** Postgres con `security_invoker`, stesse colonne del riepilogo SQLite | deciso |
+| 2026-10-07 | `.gitignore` con `/dati/` e `/certificati/` ancorati alla radice: `dati/` escludeva anche `src/dati/`, mai finito nei commit precedenti | deciso |

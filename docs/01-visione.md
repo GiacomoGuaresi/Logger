@@ -24,13 +24,13 @@ L'app parte **minima** e cresce solo quando l'uso mostra cosa manca. Le idee per
 
 ## Principi
 
-Quelli di Grocery, Projects e Trekking, adattati alla prova in locale:
+Quelli di Grocery, Projects e Trekking:
 
 1. **Semplice e rapido**: una riga si scrive in pochi secondi da telefono.
 2. **Minimo**: niente che non serva già oggi.
 3. **Gratuito**: nessun costo di hosting o database.
-4. **Privato**: i dati li vede solo chi è sulla rete di casa oggi, solo chi accede con la passphrase domani.
-5. **Prima si prova**: si usa in locale sul Mac, con SQLite; se regge, passa a Supabase come le altre app, senza server da mantenere.
+4. **Privato**: i dati li vede solo chi accede con la passphrase.
+5. **Senza server da mantenere**: sito statico su GitHub Pages e dati su Supabase, come le altre app (la prima prova girava in locale sul Mac, con SQLite).
 
 ## Utenti
 

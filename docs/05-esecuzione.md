@@ -1,64 +1,54 @@
 # 05 · Esecuzione e manutenzione
 
-## Oggi · in locale sul Mac
+## Sviluppo
 
-Serve **Node 24** (`node:sqlite`). Nessuna variabile d'ambiente, nessun servizio esterno.
+Serve **Node 24** (`.nvmrc`) e un file `.env.local` copiato da `.env.example`, con gli stessi valori delle altre app ([04](04-sicurezza.md#chiavi-e-variabili)).
+
+⚠️ Come Trekking, anche in sviluppo Logger usa il **progetto Supabase di produzione**: `npm run dev` legge e scrive i dati veri.
 
 | Comando | A cosa serve |
 |---|---|
-| `npm run dev` | sviluppo: `vite --host`, app e `/api` con ricaricamento a caldo |
-| `npm run prova` | uso di tutti i giorni: build e `vite preview --host`, senza ricaricamenti |
-| `npm test` | Vitest |
+| `npm run dev` | sviluppo: `vite --host`, l'app si apre dal Mac e, all'IP del Mac, dal telefono |
+| `npm run prova` | build e `vite preview --host`: com'è in produzione, all'indirizzo `/Logger/` |
+| `npm test` | Vitest; i test su Supabase girano solo con le variabili `SUPABASE_TEST_*` di un Supabase locale |
 | `npm run build` | controllo dei tipi e build |
-| `npm run certificati` | crea il certificato HTTPS per la rete di casa (serve mkcert) |
 | `npm run icone` | rigenera le icone della PWA da `public/icona.svg` |
 | `npm run sfondo` | rigenera lo sfondo doodle `src/ui/sfondo-diario.svg` |
-| `npm run storico` | scrive un mese di righe inventate per C3 e Guzzi Breva ([dati di prova](#dati-di-prova)) |
 
-- **Dal telefono**: stessa rete Wi‑Fi del Mac, indirizzo `http://<IP del Mac>:<porta>/`, stampato da Vite alla voce *Network*. Conviene dare al Mac un IP fisso sul router, così il segnalibro sul telefono non cambia.
-- Il Mac deve essere **acceso e con il server avviato** quando si scrive; se non lo è, le righe restano in coda sul telefono e partono quando il Mac torna raggiungibile.
+Senza `.env.local` la build riesce, ma l'app dice "Non riesco a collegarmi al database condiviso".
 
-### Database
+## Pubblicazione
 
-- File: `dati/logger.db`, creato al primo avvio, **escluso da git**.
-- **Backup**: copiare il file con il server fermo (o con `sqlite3 dati/logger.db ".backup copia.db"` anche a server avviato).
-- Per guardarci dentro: `sqlite3 dati/logger.db 'select * from voci order by quando desc limit 20'`.
+- **Repository** pubblico `github.com/GiacomoGuaresi/Logger`, licenza MIT, branch `main`. Prima di renderlo pubblico la storia non deve contenere `dati/`, `certificati/` né file `.env*` (`git log --all --stat -- dati certificati .env .env.local`).
+- **GitHub Pages** su `https://giacomoguaresi.github.io/Logger/` (Settings → Pages → Source: GitHub Actions). Il workflow `.github/workflows/pubblica.yml` a ogni push su `main`: `npm ci`, controllo delle variabili, `npm test`, `npm run build`, deploy.
+- **Variabili** del repository (Settings → Secrets and variables → Actions → Variables): `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `VITE_SUPABASE_EMAIL`, stessi valori delle altre app.
 
-### Dati di prova
+### Supabase, una volta
 
-`npm run storico` riempie `dati/logger.db` con un mese di righe **inventate**, fino a ieri, per provare diari, card e scelte con dati verosimili: per **C3** Km, Benzina, Pedaggio, Controllo Olio, Pressione gomme e Lavaggio; per **Guzzi Breva** i giri del weekend con Km, Benzina, Controllo Olio (anche con un valore), Pressione gomme e Lavaggio.
+Sul progetto di produzione di Grocery, dalla cartella di Grocery già collegata:
 
-- I km crescono giorno per giorno e finiscono sotto l'ultimo "Km" scritto a mano per quel soggetto.
-- Le righe generate hanno gli id che iniziano con `00000000-0000-4000-8000-`: rilanciando lo script si tolgono e si riscrivono, senza toccare quelle scritte dall'app. `npm run storico -- 60` genera 60 giorni, `npm run storico -- via` toglie solo le righe generate.
-- Il server può restare avviato; l'app le vede al prossimo aggiornamento (ricaricando la pagina o tornando in primo piano).
-- Oggi il database contiene solo righe di prova, scritte a mano o generate: al passaggio in produzione si cancellano tutte.
+1. eseguire gli script in ordine:
+   ```sh
+   supabase db query --linked -f ../Logger/supabase/sql/001_schema.sql
+   supabase db query --linked -f ../Logger/supabase/sql/002_voci.sql
+   supabase db query --linked -f ../Logger/supabase/sql/003_usi.sql
+   ```
+2. aggiungere `logger` agli *Exposed schemas* (Management API `PATCH /v1/projects/{ref}/postgrest`, `db_schema` con la lista **sempre intera**: `public,graphql_public,projects,trekking,logger`);
+3. aggiungere `https://giacomoguaresi.github.io/Logger/` agli URL di redirect di Auth (`uri_allow_list`, anche questa intera);
+4. la checklist di [04](04-sicurezza.md#checklist-prima-di-pubblicare).
 
-### HTTPS per la PWA
+Il token della Management API sta in `credenziali.local` nella cartella sopra i repository, mai nel repo.
 
-Il service worker, e quindi l'installazione sulla Home e la shell senza rete, funziona solo in **HTTPS** (fa eccezione `localhost`, che vale solo sul Mac). Una volta sola:
+⚠️ Il progetto Supabase è quello di produzione di Grocery: ogni modifica alla configurazione va fatta senza toccare le impostazioni usate dalle altre app. Si parte con la tabella vuota: le righe della prova in locale erano solo di prova e non si copiano.
 
-1. installare [mkcert](https://github.com/FiloSottile/mkcert) sul Mac e creare la sua autorità locale: `brew install mkcert && mkcert -install` (chiede la password del Mac, perché aggiunge l'autorità al portachiavi);
-2. `npm run certificati`: crea `certificati/cert.pem` e `key.pem` (fuori da git) per `localhost`, gli IP attuali del Mac e `<nome del Mac>.local`. `vite.config.ts` li usa da solo se ci sono, sia in `dev` sia in `prova`: da lì in poi l'indirizzo è `https://…`. Se l'IP del Mac cambia, si rilancia;
-3. installare sul telefono la radice di mkcert (`mkcert -CAROOT` → `rootCA.pem`, mandata per AirDrop o mail) e renderla attendibile. Su iOS: Impostazioni → Generali → VPN e gestione dispositivi → installa il profilo; poi Impostazioni → Generali → Info → Impostazioni attendibilità certificati → attiva mkcert.
+## Backup
 
-Senza certificato tutto funziona in HTTP come pagina normale, coda senza rete compresa (finché la pagina resta aperta); manca solo l'installazione vera.
+I dati stanno su Supabase, nei backup giornalieri del progetto. Per una copia a mano:
 
-### Versioni
+```sh
+supabase db dump --linked --data-only --schema logger -f logger-$(date +%F).sql
+```
 
-`git init` **solo locale**: nessun repository remoto, nessuna pipeline, nessuna pubblicazione.
+## Aggiornare l'app
 
-## Fase 2 · Pubblicazione con Supabase
-
-Da dettagliare quando la prova regge. In breve, come Trekking:
-
-- **Repository** pubblico `github.com/GiacomoGuaresi/Logger`, licenza MIT, branch `main` (prima di pubblicarlo: controllare che la storia non contenga `logger.db`).
-- **GitHub Pages** su `https://giacomoguaresi.github.io/Logger/`, Vite con `base: '/Logger/'`, workflow `.github/workflows/pubblica.yml` (`npm ci`, controllo variabili, `npm test`, `npm run build`, deploy).
-- **Variabili** del repository: `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `VITE_SUPABASE_EMAIL`, stessi valori delle altre app ([04](04-sicurezza.md#dalla-fase-2--supabase)).
-- **Supabase**, progetto di produzione di Grocery:
-  1. eseguire gli script di `supabase/sql/` in ordine dalla cartella di Grocery: `supabase db query --linked -f ../Logger/supabase/sql/NNN_*.sql`;
-  2. aggiungere `logger` agli *Exposed schemas* (Management API `PATCH /v1/projects/{ref}/postgrest`, lista **sempre intera**: `public,graphql_public,projects,trekking,logger`);
-  3. aggiungere `https://giacomoguaresi.github.io/Logger/` agli URL di redirect di Auth (`uri_allow_list`, anche questa intera);
-  4. copiare le righe da `logger.db` ([08](08-modello-dati.md#passaggio-a-supabase)).
-- Il token della Management API sta in `credenziali.local` nella cartella sopra i repository, mai nel repo.
-
-⚠️ Il progetto Supabase è quello di produzione di Grocery: ogni modifica alla configurazione va fatta senza toccare le impostazioni usate dalle altre app.
+Un push su `main` pubblica. La PWA si aggiorna da sola (`registerType: 'autoUpdate'`) alla prossima apertura con la rete. Una modifica allo schema è uno script nuovo in `supabase/sql/`, numerato, da applicare **prima** del push che lo usa.

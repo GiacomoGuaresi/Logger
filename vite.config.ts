@@ -1,33 +1,23 @@
-import { existsSync, readFileSync } from 'node:fs'
 import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
-import { pluginApi } from './server/pluginApi.ts'
 
-// Prova in locale (docs/05-esecuzione.md): `npm run dev` e `npm run prova`
-// ascoltano su tutta la rete di casa (`--host`), così l'app si apre anche dal
-// telefono all'IP del Mac. Le rotte `/api` e il database SQLite stanno dentro
-// Vite stesso (server/pluginApi.ts). Niente `base`: non c'è GitHub Pages fino
-// alla Fase 2.
-
-// HTTPS solo se `npm run certificati` ha creato il certificato: serve al
-// telefono per installare la PWA. Senza, tutto va in HTTP come prima.
-const https = existsSync('certificati/cert.pem')
-  ? { cert: readFileSync('certificati/cert.pem'), key: readFileSync('certificati/key.pem') }
-  : undefined
+// base = nome del repository, perché il sito è servito da GitHub Pages su
+// https://giacomoguaresi.github.io/Logger/ (docs/05-esecuzione.md). I dati
+// stanno su Supabase (src/dati/index.ts): niente server qui dentro.
+// `npm run dev` ascolta su tutta la rete di casa (`--host`), così l'app in
+// sviluppo si apre anche dal telefono.
 
 export default defineConfig({
-  server: { https },
-  preview: { https },
+  base: '/Logger/',
   plugins: [
     react(),
     tailwindcss(),
-    pluginApi('dati/logger.db'),
     // PWA come nelle altre app: installabile, con la shell dell'app in cache.
     // I dati non passano dal service worker: le righe senza rete le tiene
-    // l'app (src/dati/memoriaLocale.ts), e `/api` va sempre in rete. Le icone
-    // le genera `npm run icone` da public/icona.svg.
+    // l'app (src/dati/memoriaLocale.ts), e Supabase va sempre in rete. Le
+    // icone le genera `npm run icone` da public/icona.svg.
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'icona.svg', 'apple-touch-icon-180x180.png'],
@@ -49,12 +39,11 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
-        navigateFallbackDenylist: [/^\/api\//],
       },
     }),
   ],
   test: {
     environment: 'node',
-    include: ['src/**/*.test.ts', 'server/**/*.test.ts'],
+    include: ['src/**/*.test.ts'],
   },
 })

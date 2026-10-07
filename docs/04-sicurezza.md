@@ -1,15 +1,10 @@
 # 04 · Sicurezza
 
-## Oggi · prova in locale
+> Durante la prova in locale (Fase 1) l'app girava sul Mac, raggiungibile solo dalla rete di casa e senza passphrase. Dalla Fase 2 valgono le regole qui sotto.
 
-- Il server gira **sul Mac** ed è raggiungibile solo dalla **rete di casa** (`vite --host` ascolta sull'IP locale, non è esposto su internet).
-- **Niente passphrase**: chiunque sia sul Wi‑Fi di casa può aprire l'app. Accettabile per la prova; non va aperta una porta sul router né usato un tunnel verso l'esterno.
-- Il database `dati/logger.db` è **escluso da git** (`.gitignore`), e il repository è solo locale.
-- Cache e coda senza rete stanno nel `localStorage` del browser ([03](03-architettura.md#senza-rete)): chi ha in mano il telefono sbloccato può leggerle. È lo stesso compromesso di Grocery, accettabile per dati di questo tipo.
+## Supabase
 
-## Dalla Fase 2 · Supabase
-
-Quando il progetto diventa **pubblico** su GitHub e il sito va online, valgono le regole delle altre app: progetto Supabase, account e modo di accesso sono **gli stessi di Grocery, Projects e Trekking**.
+Il progetto è **pubblico** su GitHub e il sito è online: valgono le regole delle altre app: progetto Supabase, account e modo di accesso sono **gli stessi di Grocery, Projects e Trekking**.
 
 ### Chiavi e variabili
 
@@ -41,7 +36,11 @@ Quando il progetto diventa **pubblico** su GitHub e il sito va online, valgono l
 - [ ] Registrazioni pubbliche ancora spente sul progetto (`disable_signup: true`)
 - [ ] RLS attiva su ogni tabella dello schema `logger`
 - [ ] Una query con la sola publishable key e senza sessione non restituisce righe
-- [ ] Nessun file `.env*` né `logger.db` nella storia git prima di renderla pubblica
+- [ ] Nessun file `.env*`, `dati/` (con `logger.db`) né `certificati/` nella storia git prima di renderla pubblica
 - [ ] Secret key e password del DB assenti dal repo e dalla storia git
 - [ ] URL di redirect di Auth: aggiunto `https://giacomoguaresi.github.io/Logger/`
 - [ ] Sessione condivisa verificata: accesso a Grocery → Logger aperto senza passphrase
+
+### Dati sul dispositivo
+
+Cache e coda senza rete stanno nel `localStorage` del browser ([03](03-architettura.md#senza-rete)): chi ha in mano il telefono sbloccato può leggerle. È lo stesso compromesso di Grocery, accettabile per dati di questo tipo.
