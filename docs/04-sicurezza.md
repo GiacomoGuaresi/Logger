@@ -37,7 +37,7 @@ Il progetto è **pubblico** su GitHub e il sito è online: valgono le regole del
 - [x] RLS attiva su ogni tabella dello schema `logger`
 - [x] Una query con la sola publishable key e senza sessione non restituisce righe
 - [x] Nessun file `.env*`, `dati/` (con `logger.db`) né `certificati/` nella storia git prima di renderla pubblica
-- [ ] Secret key e password del DB assenti dal repo e dalla storia git
+- [x] Secret key e password del DB assenti dal repo e dalla storia git
 - [x] URL di redirect di Auth: aggiunto `https://giacomoguaresi.github.io/Logger/`
 - [ ] Sessione condivisa verificata: accesso a Grocery → Logger aperto senza passphrase
 
