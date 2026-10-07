@@ -32,5 +32,7 @@ left join lateral (
   limit 1
 ) u on true;
 
-revoke all on logger.usi from public, anon;
+-- I privilegi di default di Supabase darebbero ad authenticated anche le
+-- scritture: la vista si legge e basta.
+revoke all on logger.usi from public, anon, authenticated;
 grant select on logger.usi to authenticated;

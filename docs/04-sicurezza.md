@@ -33,12 +33,12 @@ Il progetto è **pubblico** su GitHub e il sito è online: valgono le regole del
 
 ### Checklist prima di pubblicare
 
-- [ ] Registrazioni pubbliche ancora spente sul progetto (`disable_signup: true`)
-- [ ] RLS attiva su ogni tabella dello schema `logger`
-- [ ] Una query con la sola publishable key e senza sessione non restituisce righe
-- [ ] Nessun file `.env*`, `dati/` (con `logger.db`) né `certificati/` nella storia git prima di renderla pubblica
+- [x] Registrazioni pubbliche ancora spente sul progetto (`disable_signup: true`)
+- [x] RLS attiva su ogni tabella dello schema `logger`
+- [x] Una query con la sola publishable key e senza sessione non restituisce righe
+- [x] Nessun file `.env*`, `dati/` (con `logger.db`) né `certificati/` nella storia git prima di renderla pubblica
 - [ ] Secret key e password del DB assenti dal repo e dalla storia git
-- [ ] URL di redirect di Auth: aggiunto `https://giacomoguaresi.github.io/Logger/`
+- [x] URL di redirect di Auth: aggiunto `https://giacomoguaresi.github.io/Logger/`
 - [ ] Sessione condivisa verificata: accesso a Grocery → Logger aperto senza passphrase
 
 ### Dati sul dispositivo
