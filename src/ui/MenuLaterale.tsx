@@ -1,7 +1,10 @@
 import { useEffect, useRef } from 'react'
-import { BookOpen, Download, LayoutGrid, PenLine, X } from 'lucide-react'
+import { BookOpen, Download, House, LayoutGrid, PenLine, X } from 'lucide-react'
 import { confrontabile } from '../dominio/suggerimenti'
 import { indirizzi, indirizzoDiario, type Rotta } from './rotta'
+
+/** Il launcher con tutte le app di casa: da lì si passa da un'app all'altra. */
+const TUTTE_LE_APP = 'https://giacomoguaresi.github.io/Casa/'
 
 /** Da questa larghezza il menu è sempre aperto: la stessa soglia di `lg:`. */
 const SEMPRE_APERTO = '(min-width: 1024px)'
@@ -136,12 +139,20 @@ export function MenuLaterale({ aperto, corrente, diari, onChiudi, onInstalla }: 
         </ul>
         {diari.length === 0 && <p className="m-0 px-3 py-1 text-sm text-testo-tenue">Nessuno: nascono con la prima riga.</p>}
         {/* Le voci di servizio stanno in fondo, lontane dall'uso di tutti i giorni. */}
+        <a
+          href={TUTTE_LE_APP}
+          onClick={onChiudi}
+          className="mt-auto flex min-h-11 items-center gap-3 rounded-lg px-3 hover:bg-fondo active:bg-bordo"
+        >
+          <House className="size-[18px] text-testo-tenue" aria-hidden="true" />
+          Tutte le app
+        </a>
         {onInstalla && (
           <button
             type="button"
             onClick={onInstalla}
             aria-current={corrente.pagina === 'installa' ? 'page' : undefined}
-            className="group mt-auto flex min-h-11 w-full items-center gap-3 rounded-lg px-3 text-left hover:bg-fondo active:bg-bordo aria-[current=page]:bg-fumo aria-[current=page]:font-semibold"
+            className="group flex min-h-11 w-full items-center gap-3 rounded-lg px-3 text-left hover:bg-fondo active:bg-bordo aria-[current=page]:bg-fumo aria-[current=page]:font-semibold"
           >
             <Download
               className="size-[18px] text-testo-tenue group-aria-[current=page]:text-grafite"
