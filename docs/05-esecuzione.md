@@ -4,7 +4,7 @@
 
 Serve **Node 24** (`.nvmrc`) e un file `.env.local` copiato da `.env.example`, con gli stessi valori delle altre app ([04](04-sicurezza.md#chiavi-e-variabili)).
 
-⚠️ Come Trekking, anche in sviluppo Logger usa il **progetto Supabase di produzione**: `npm run dev` legge e scrive i dati veri.
+⚠️ Come Adventures, anche in sviluppo Logger usa il **progetto Supabase di produzione**: `npm run dev` legge e scrive i dati veri.
 
 | Comando | A cosa serve |
 |---|---|
@@ -33,7 +33,7 @@ Sul progetto di produzione di Grocery, dalla cartella di Grocery già collegata:
    supabase db query --linked -f ../Logger/supabase/sql/002_voci.sql
    supabase db query --linked -f ../Logger/supabase/sql/003_usi.sql
    ```
-2. aggiungere `logger` agli *Exposed schemas* (Management API `PATCH /v1/projects/{ref}/postgrest`, `db_schema` con la lista **sempre intera**: `public,graphql_public,projects,trekking,logger`);
+2. aggiungere `logger` agli *Exposed schemas* (Management API `PATCH /v1/projects/{ref}/postgrest`, `db_schema` con la lista **sempre intera**: `public,graphql_public,projects,adventures,logger`);
 3. aggiungere `https://giacomoguaresi.github.io/Logger/` agli URL di redirect di Auth (`uri_allow_list`, anche questa intera);
 4. la checklist di [04](04-sicurezza.md#checklist-prima-di-pubblicare).
 

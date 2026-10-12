@@ -8,7 +8,7 @@ moto · Benzina        · 25€
 auto · Controllo olio            ← nessun valore: è solo il segno che è stato fatto
 ```
 
-Poi si rilegge tutto nel **diario**, dal più recente. Nient'altro, per ora: le funzionalità si aggiungono quando ci si accorge che servono. Quarta app di casa dopo **Grocery**, **Projects** e **Trekking**.
+Poi si rilegge tutto nel **diario**, dal più recente. Nient'altro, per ora: le funzionalità si aggiungono quando ci si accorge che servono. Quarta app di casa dopo **Grocery**, **Projects** e **Adventures**.
 
 > **Stato: in produzione dalla 1.0** su **https://giacomoguaresi.github.io/Logger/**, con i dati su Supabase ([roadmap](docs/06-roadmap.md)).
 

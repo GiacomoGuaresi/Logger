@@ -2,7 +2,7 @@
 
 ## Schema generale
 
-Dalla Fase 2 Logger è un sito statico su **GitHub Pages** che parla direttamente con **Supabase**, come Grocery, Projects e Trekking. Niente server da tenere acceso.
+Dalla Fase 2 Logger è un sito statico su **GitHub Pages** che parla direttamente con **Supabase**, come Grocery, Projects e Adventures. Niente server da tenere acceso.
 
 ```mermaid
 flowchart LR
@@ -68,12 +68,12 @@ Lo schema è quello di Grocery (`memoriaLocale.ts` e `sincronizzatore.ts`), più
 | Build | Vite, `base: '/Logger/'` | `npm run dev` con `--host`, per provarla dal telefono |
 | Database e accesso | Supabase (`@supabase/supabase-js`, `@supabase/ssr`) | progetto di produzione di Grocery, schema `logger` |
 | Routing | hash router | GitHub Pages non vede mai le rotte |
-| Stile | Tailwind CSS, come Projects e Trekking | palette in [09](09-interfaccia.md) |
+| Stile | Tailwind CSS, come Projects e Adventures | palette in [09](09-interfaccia.md) |
 | Icone | lucide-react | |
 | Memoria locale | localStorage | cache e coda, come Grocery |
 | PWA | vite-plugin-pwa | |
 | Test | Vitest, sulla logica pura e sul contratto dell'archivio | |
-| Pubblicazione | GitHub Actions → GitHub Pages | `.github/workflows/pubblica.yml`, come Trekking |
+| Pubblicazione | GitHub Actions → GitHub Pages | `.github/workflows/pubblica.yml`, come Adventures |
 
 ## Test
 
@@ -106,7 +106,7 @@ Logger/
 
 ## Convivenza con le altre app
 
-Logger sta nel **progetto Supabase di produzione di Grocery**, come Projects e Trekking:
+Logger sta nel **progetto Supabase di produzione di Grocery**, come Projects e Adventures:
 
 - **schema Postgres dedicato `logger`**, aggiunto agli *Exposed schemas* dell'API; il client si crea con `db: { schema: 'logger' }`;
 - **autenticazione condivisa**: stesso utente Auth delle altre app, sessione nei cookie con percorso `/`;

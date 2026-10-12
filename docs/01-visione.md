@@ -24,7 +24,7 @@ L'app parte **minima** e cresce solo quando l'uso mostra cosa manca. Le idee per
 
 ## Principi
 
-Quelli di Grocery, Projects e Trekking:
+Quelli di Grocery, Projects e Adventures:
 
 1. **Semplice e rapido**: una riga si scrive in pochi secondi da telefono.
 2. **Minimo**: niente che non serva già oggi.

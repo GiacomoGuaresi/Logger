@@ -14,7 +14,7 @@ interface Props {
 /**
  * La schermata d'accesso (docs/09-interfaccia.md): come nelle altre app, il solo
  * campo passphrase. Si vede una volta per dispositivo, poi la sessione resta
- * nei cookie, condivisa con Grocery, Projects e Trekking.
+ * nei cookie, condivisa con Grocery, Projects e Adventures.
  */
 export function Accesso({ onEntra }: Props) {
   const [passphrase, setPassphrase] = useState('')

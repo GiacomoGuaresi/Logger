@@ -1,5 +1,5 @@
 // Accesso con passphrase (docs/04-sicurezza.md): lo stesso account condiviso di
-// Grocery, Projects e Trekking, la passphrase ne è la password. Il resto
+// Grocery, Projects e Adventures, la passphrase ne è la password. Il resto
 // dell'app conosce solo questa interfaccia; sotto c'è la sessione di Supabase,
 // che le policy pretendono.
 

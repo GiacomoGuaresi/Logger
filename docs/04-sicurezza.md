@@ -4,7 +4,7 @@
 
 ## Supabase
 
-Il progetto è **pubblico** su GitHub e il sito è online: valgono le regole delle altre app: progetto Supabase, account e modo di accesso sono **gli stessi di Grocery, Projects e Trekking**.
+Il progetto è **pubblico** su GitHub e il sito è online: valgono le regole delle altre app: progetto Supabase, account e modo di accesso sono **gli stessi di Grocery, Projects e Adventures**.
 
 ### Chiavi e variabili
 

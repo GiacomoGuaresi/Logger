@@ -9,7 +9,7 @@ type Stato =
   | { fase: 'errore' }
 
 /**
- * Il cancello davanti all'app, come in Grocery, Projects e Trekking: finché non c'è una sessione
+ * Il cancello davanti all'app, come in Grocery, Projects e Adventures: finché non c'è una sessione
  * mostra la passphrase, poi l'app. Se la sessione finisce mentre l'app è aperta
  * si torna alla passphrase.
  */

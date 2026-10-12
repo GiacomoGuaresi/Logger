@@ -2,7 +2,7 @@
 
 ## Coerenza con le altre app
 
-Stessa struttura di Grocery, Projects e Trekking, con un colore diverso:
+Stessa struttura di Grocery, Projects e Adventures, con un colore diverso:
 - **intestazione piena** nel colore dell'app, con ☰ a sinistra;
 - **menu laterale** a scomparsa, sempre aperto su schermi larghi: **Registra**; poi la sezione **Diari** con **Tutti i diari** (le card) e una voce per ogni diario, in ordine alfabetico, col numero di righe a destra; in fondo **Installa l'app**. La voce della pagina aperta, diario compreso, ha la barra ambra;
 - stesso font e stesse icone Lucide;
@@ -10,7 +10,7 @@ Stessa struttura di Grocery, Projects e Trekking, con un colore diverso:
 
 ## Palette · grafite e ambra (proposta)
 
-Le altre app sono terracotta (Grocery), verde (Projects) e blu (Trekking): Logger prende i colori di un cruscotto.
+Le altre app sono terracotta (Grocery), verde (Projects) e blu (Adventures): Logger prende i colori di un cruscotto.
 
 | Uso | Colore | Note |
 |---|---|---|

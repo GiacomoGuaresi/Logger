@@ -1,8 +1,8 @@
 -- Logger · 001 · Schema vuoto (docs/03-architettura.md, docs/04-sicurezza.md).
 --
 -- Gira sul progetto Supabase di produzione di Grocery, in uno schema dedicato:
--- nessuna tabella di Grocery (public), Projects (projects) o Trekking
--- (trekking) viene toccata. Si applica a mano, dalla cartella di Grocery già
+-- nessuna tabella di Grocery (public), Projects (projects) o Adventures
+-- (adventures) viene toccata. Si applica a mano, dalla cartella di Grocery già
 -- collegata, non con `supabase db push`, che andrebbe in conflitto con lo
 -- storico migrazioni di Grocery:
 --   supabase db query --linked -f ../Logger/supabase/sql/001_schema.sql

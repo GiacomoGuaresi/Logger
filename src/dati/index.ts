@@ -22,7 +22,7 @@ let connessione: { accesso: Accesso; archivio: Archivio } | null = null
  * Il client nasce alla prima richiesta, non all'import: senza variabili l'app
  * mostra "non riesco a collegarmi" invece di non partire affatto.
  *
- * La sessione sta nei cookie con percorso `/`: Grocery, Projects e Trekking
+ * La sessione sta nei cookie con percorso `/`: Grocery, Projects e Adventures
  * stanno sulla stessa origine e sullo stesso progetto Supabase, quindi con lo
  * stesso percorso le app condividono la sessione (docs/04-sicurezza.md).
  */
