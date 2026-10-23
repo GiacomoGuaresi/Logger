@@ -1,10 +1,7 @@
 import { useEffect, useRef } from 'react'
-import { ArrowLeft, BookOpen, Download, LayoutGrid, PenLine, X } from 'lucide-react'
+import { BookOpen, Download, LayoutGrid, PenLine, X } from 'lucide-react'
 import { confrontabile } from '../dominio/suggerimenti'
 import { indirizzi, indirizzoDiario, type Rotta } from './rotta'
-
-/** Il launcher con tutte le app di casa: da lì si passa da un'app all'altra. */
-const ELENCO_APP = 'https://giacomoguaresi.github.io/Casa/'
 
 /** Da questa larghezza il menu è sempre aperto: la stessa soglia di `lg:`. */
 const SEMPRE_APERTO = '(min-width: 1024px)'
@@ -94,16 +91,6 @@ export function MenuLaterale({ aperto, corrente, diari, onChiudi, onInstalla }: 
             <X className="size-5" aria-hidden="true" />
           </button>
         </div>
-        {/* Sempre la prima voce, staccata dalle altre: si torna al launcher. */}
-        <a
-          href={ELENCO_APP}
-          onClick={onChiudi}
-          className="flex min-h-11 shrink-0 items-center gap-3 rounded-lg px-3 hover:bg-fondo active:bg-bordo"
-        >
-          <ArrowLeft className="size-[18px] text-testo-tenue" aria-hidden="true" />
-          Torna all'elenco app
-        </a>
-        <hr className="mx-1 my-2 border-bordo" />
         <a
           href={indirizzi.registra}
           aria-current={corrente.pagina === 'registra' ? 'page' : undefined}
