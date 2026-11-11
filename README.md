@@ -55,4 +55,21 @@ Pubblicazione, Supabase e backup: [05](docs/05-esecuzione.md).
 | [docs/07-decisioni.md](docs/07-decisioni.md) | Registro delle decisioni |
 | [docs/08-modello-dati.md](docs/08-modello-dati.md) | La tabella delle righe e il riepilogo, in Postgres |
 | [docs/09-interfaccia.md](docs/09-interfaccia.md) | Struttura, palette, icona, schermate |
-| [Q&A.md](Q&A.md) | Domande ancora aperte |
+| [docs/Q&A.md](docs/Q&A.md) | Domande ancora aperte |
+
+## Le app di casa
+
+Logger è una di quattro app nate per casa mia. Usano lo stesso progetto Supabase e lo stesso account: una sola passphrase vale per tutte.
+
+- **[Grocery](https://github.com/GiacomoGuaresi/Grocery)**: la lista della spesa di due settimane, generata dalla routine dei pasti.
+- **[Projects](https://github.com/GiacomoGuaresi/Projects)**: le attività di casa raggruppate per progetto, ognuna col suo diario.
+- **[Adventures](https://github.com/GiacomoGuaresi/Adventures)**: trekking e avventure da fare, su elenco e mappa.
+- **Logger** (questa): un diario minimo di qualunque cosa valga la pena tenere a mente.
+
+## Uso dell'IA
+
+Sviluppata con Claude Code come assistente: 20 commit su 20 sono co-firmati. Le scelte di prodotto, l'architettura e la revisione di ogni modifica sono mie.
+
+## Licenza
+
+[MIT](LICENSE).

@@ -17,7 +17,7 @@ Dalla Fase 2 "finito" vuol dire anche pubblicato: il push su `main` passa test e
 - [x] Documentazione di base
 - [x] Modello semplificato: righe **soggetto · chiave · valore** con la data, solo diario ([07](07-decisioni.md))
 - [x] Prova in locale con SQLite, Supabase nella Fase 2
-- [x] Giro di Q&A ([Q&A.md](../Q&A.md)): valgono le scelte proposte (palette grafite e ambra, diario unico)
+- [x] Giro di Q&A ([Q&A.md](Q&A.md)): valgono le scelte proposte (palette grafite e ambra, diario unico)
 
 ## Fase 1 · Prova in locale
 

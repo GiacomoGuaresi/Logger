@@ -90,7 +90,7 @@ Come nelle altre app, i test coprono la **logica pura**:
 
 ```
 Logger/
-├── README.md · Q&A.md · LICENSE · .env.example
+├── README.md · LICENSE · .env.example
 ├── .github/workflows/     # pubblica.yml: test, build e deploy su GitHub Pages
 ├── docs/
 ├── index.html · vite.config.ts · package.json · tsconfig.json
